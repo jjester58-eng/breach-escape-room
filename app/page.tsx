@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const missions = [
   {
     number: "01",
@@ -35,10 +37,10 @@ export default function Home() {
   return (
     <main className="site-shell">
       <nav className="topbar">
-        <a className="brand" href="/" aria-label="BREACH home">
+        <Link className="brand" href="/" aria-label="BREACH home">
           <span className="brand-mark">B</span>
           <span>BREACH<span className="brand-period">.</span></span>
-        </a>
+        </Link>
         <span className="topbar-label">CYBERSECURITY TRAINING SIMULATION</span>
         <span className="topbar-status"><i /> SYSTEM ONLINE</span>
       </nav>
