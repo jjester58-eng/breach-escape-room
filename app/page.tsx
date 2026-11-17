@@ -38,8 +38,8 @@ export default function Home() {
         <div className="section-heading"><div><div className="eyebrow">YOUR ASSIGNMENT <span className="eyebrow-divider">/</span> CASE FILE 0417</div><h2>THE INVESTIGATION<span className="accent">.</span></h2></div><p>Each mission unlocks another piece of the incident. Follow the evidence. Think like an analyst.</p></div>
         <div className="mission-grid">
           {missions.map((mission) => (
-            <article className={\`mission-card \${mission.active ? "mission-active" : ""}\`} key={mission.number}>
-              <div className="mission-card-top"><span className="mission-number">{mission.number}</span><span className={\`mission-status \${mission.active ? "status-active" : ""}\`}>{mission.status}</span></div>
+            <article className={`mission-card \${mission.active ? "mission-active" : ""}`} key={mission.number}>
+              <div className="mission-card-top"><span className="mission-number">{mission.number}</span><span className={`mission-status \${mission.active ? "status-active" : ""}`}>{mission.status}</span></div>
               <h3>{mission.name}</h3><p>{mission.topic}</p>
               <div className="mission-card-bottom">
                 {mission.active ? <Link href="/mission-1" className="mission-launch">SELECT LEVEL &amp; START <span>↗</span></Link> : <span>AWAITING CLEARANCE</span>}
