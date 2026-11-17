@@ -89,6 +89,8 @@ export default function MissionOneClient() {
   const [submitted, setSubmitted] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [deepDive, setDeepDive] = useState(false);
+  const [studentName, setStudentName] = useState("");
+  const [certificateReady, setCertificateReady] = useState(false);
 
   const selectedLevel = levels.find((item) => item.id === level);
   const requiredBranches = selectedLevel?.branches ?? 0;
@@ -106,7 +108,7 @@ export default function MissionOneClient() {
   }
 
   function startLevel(id: number) {
-    setLevel(id); setAnswers({}); setReport(""); setSubmitted(false); setDeepDive(false); setShowHint(false); setActiveBranch("phishing");
+    setLevel(id); setAnswers({}); setReport(""); setSubmitted(false); setDeepDive(false); setShowHint(false); setActiveBranch("phishing"); setStudentName(""); setCertificateReady(false);
   }
 
   if (level === null) {
@@ -124,9 +126,51 @@ export default function MissionOneClient() {
 
   if (submitted) {
     return (
-      <main className="game-shell">
-        <nav className="game-nav"><Link className="brand" href="/"><span className="brand-mark">B</span><span>BREACH<span className="brand-period">.</span></span></Link><span className="topbar-status"><i /> CASE REVIEW</span></nav>
-        <section className="completion-panel"><div className="completion-mark">✓</div><div className="eyebrow">MISSION 01 / REPORT RECEIVED</div><h1 className="game-title">INITIAL ACCESS<br/><em>INVESTIGATED</em><span className="accent">.</span></h1><p className="game-lead">You completed {selectedLevel?.title}. Your findings have been recorded in this session.</p><div className="completion-stats"><div><strong>{score}</strong><span>ACCURATE DECISIONS</span></div><div><strong>{completedBranches}</strong><span>BRANCHES COMPLETED</span></div><div><strong>LEVEL {level}</strong><span>DIFFICULTY</span></div></div><div className="report-review"><div className="panel-kicker">YOUR INCIDENT SUMMARY</div><p>{report}</p></div><div className="completion-actions"><button className="primary-button" onClick={() => startLevel(level)}>REPLAY THIS LEVEL ↻</button><Link className="secondary-button" href="/">RETURN TO CASE FILES</Link></div><p className="game-footnote">Next: Mission 02 — The Impostor. Your investigation flags can later carry forward into connected missions.</p></section>
+      <main className="game-shell completion-shell">
+        <nav className="game-nav no-print"><Link className="brand" href="/"><span className="brand-mark">B</span><span>BREACH<span className="brand-period">.</span></span></Link><span className="topbar-status"><i /> CASE REVIEW</span></nav>
+        <section className="completion-panel no-print">
+          <div className="completion-mark">✓</div>
+          <div className="eyebrow">MISSION 01 / REPORT RECEIVED</div>
+          <h1 className="game-title">INITIAL ACCESS<br/><em>INVESTIGATED</em><span className="accent">.</span></h1>
+          <p className="game-lead">You completed {selectedLevel?.title}. Your findings have been recorded in this session.</p>
+          <div className="completion-stats"><div><strong>{score}</strong><span>ACCURATE DECISIONS</span></div><div><strong>{completedBranches}</strong><span>BRANCHES COMPLETED</span></div><div><strong>LEVEL {level}</strong><span>DIFFICULTY</span></div></div>
+          <div className="report-review"><div className="panel-kicker">YOUR INCIDENT SUMMARY</div><p>{report}</p></div>
+          {!certificateReady ? (
+            <section className="certificate-entry">
+              <div className="panel-kicker">FINAL STEP / COMPLETION CERTIFICATE</div>
+              <h2>WHO COMPLETED THIS MISSION?</h2>
+              <p>Enter your name as you want it to appear on your certificate. You can then print it, save it as a PDF, or take a screenshot to submit for your completion grade.</p>
+              <label htmlFor="student-certificate-name">STUDENT NAME</label>
+              <input id="student-certificate-name" value={studentName} onChange={(event) => setStudentName(event.target.value)} maxLength={70} placeholder="Enter first and last name" />
+              <button className="primary-button" disabled={!studentName.trim()} onClick={() => setCertificateReady(true)}>GENERATE CERTIFICATE ↗</button>
+            </section>
+          ) : (
+            <div className="certificate-actions">
+              <p><strong>Certificate ready.</strong> Use Print / Save as PDF, or take a screenshot of the certificate below.</p>
+              <button className="primary-button" onClick={() => window.print()}>PRINT / SAVE AS PDF ↗</button>
+              <button className="secondary-button" onClick={() => setCertificateReady(false)}>EDIT STUDENT NAME</button>
+            </div>
+          )}
+          <div className="completion-actions"><button className="secondary-button" onClick={() => startLevel(level)}>REPLAY THIS LEVEL ↻</button><Link className="secondary-button" href="/">RETURN TO CASE FILES</Link></div>
+        </section>
+        {certificateReady && (
+          <section className="certificate-sheet" aria-label="BREACH certificate of completion">
+            <div className="certificate-frame">
+              <div className="certificate-brand">BREACH<span>.</span></div>
+              <div className="certificate-subtitle">CYBERSECURITY ESCAPE ROOM</div>
+              <div className="certificate-rule" />
+              <div className="certificate-kicker">CERTIFICATE OF COMPLETION</div>
+              <p className="certificate-intro">This certifies that</p>
+              <h2 className="certificate-student">{studentName.trim()}</h2>
+              <p className="certificate-intro">has successfully completed</p>
+              <h3 className="certificate-mission">MISSION 01 — THE INFILTRATION</h3>
+              <div className="certificate-status">MISSION COMPLETE</div>
+              <div className="certificate-details"><div><span>DIFFICULTY</span><strong>LEVEL {level}</strong></div><div><span>ACCURATE DECISIONS</span><strong>{score}</strong></div><div><span>INVESTIGATION PATHS</span><strong>{completedBranches}</strong></div></div>
+              <div className="certificate-date">COMPLETION DATE: {new Date().toLocaleDateString()}</div>
+              <div className="certificate-footer">BREACH CYBERSECURITY TRAINING <span>·</span> FICTIONAL TRAINING ENVIRONMENT</div>
+            </div>
+          </section>
+        )}
       </main>
     );
   }
