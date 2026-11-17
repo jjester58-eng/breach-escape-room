@@ -500,3 +500,17 @@ h2 { margin: 12px 0 0; font-family: 'Barlow Condensed', sans-serif; font-size: 4
 @media(max-width:900px) { .mission2-scenario-grid { grid-template-columns:1fr; } .mission2-scenario-card { min-height:0; } .mission2-scenario-card>p { min-height:0; } .mission2-workspace { grid-template-columns:1fr; } }
 @media(max-width:600px) { .mission2-evidence-row { grid-template-columns:1fr; gap:6px; } .mission2-stage-controls { align-items:stretch; flex-direction:column; } .mission2-stage-controls>* { width:100%; justify-content:center; } }
 @media print { .mission2-scenario-grid,.mission2-workspace,.mission2-stage-controls { display:none!important; } }
+
+
+/* Mission 03 — forensic lab components */
+.hash-lab,.stego-lab,.cipher-lab{display:grid;gap:14px;margin-top:18px;padding:18px;border:1px solid var(--line,#2a3540);border-radius:12px;background:rgba(8,15,22,.48)}
+.hash-downloads{display:flex;flex-wrap:wrap;gap:10px}
+.hash-lab label,.stego-lab label,.cipher-lab label{display:block;margin:8px 0 4px;font-size:.72rem;font-weight:800;letter-spacing:.09em;color:var(--muted,#9aa8b5)}
+.hash-lab input[type=file],.stego-lab input[type=file]{width:100%;padding:12px;border:1px dashed var(--line,#40505d);border-radius:8px;color:inherit;background:rgba(255,255,255,.025)}
+.hash-value{overflow-wrap:anywhere;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.78rem;line-height:1.65}
+.stego-preview{display:block;width:min(100%,540px);height:auto;border-radius:9px;border:1px solid var(--line,#40505d);image-rendering:auto}
+.cipher-text,.cipher-output{padding:14px;border-radius:8px;background:rgba(0,0,0,.24);font-family:ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em;overflow-wrap:anywhere}
+.cipher-output{border:1px solid var(--line,#40505d);color:var(--accent,#7de0bd)}
+.cipher-lab input[type=range]{width:100%;accent-color:var(--accent,#7de0bd)}
+.hash-lab .feedback-box,.stego-lab .feedback-box,.cipher-lab .feedback-box{margin-top:8px}
+@media(max-width:640px){.hash-downloads{display:grid}.hash-downloads a{width:100%;justify-content:center}.hash-lab,.stego-lab,.cipher-lab{padding:13px}}
