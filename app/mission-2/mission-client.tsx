@@ -32,28 +32,28 @@ const scenarios: Scenario[] = [
         {label:"The message uses a button instead of a plain-text link",correct:false,feedback:"Buttons are common in legitimate messages too. The destination matters more than how the link is displayed."},
         {label:"The destination domain is different from RooBank's known domain",correct:true,feedback:"Correct. The link leads to roobank-secure-login.example, not roobank.example. Similar wording does not make it the same domain."},
         {label:"The message says the account needs attention",correct:false,feedback:"Urgency is a warning sign, but the domain mismatch is the strongest technical clue here."}
-      ], explanation:"Read the hostname from right to left around the registered domain. An attacker can register a look-alike name, but cannot make it the bank's real domain merely by adding familiar words.", hint:"Compare the two complete hostnames. Which registered domain is different?" },
+      ], explanation:"Look at the website address carefully. A fake site can use words that look familiar, but that does not make it the bank's real website.", hint:"Compare the two complete hostnames. Which registered domain is different?" },
       { title:"Two Websites, One Bank", subtitle:"Compare the identities", briefing:"The help desk captured the addresses shown in two browser sessions. Both pages use RooBank colors and logos. Branding is not proof of identity.", evidence:[
         {label:"PAGE A",value:"https://www.roobank.example/login"},
         {label:"PAGE B",value:"https://www.roobank-login.example/login"},
         {label:"PAGE A HOST",value:"www.roobank.example"},
         {label:"PAGE B HOST",value:"www.roobank-login.example"}
-      ], question:"Which page uses RooBank's known domain?", context:"A subdomain appears to the left of the registered domain. The registered domain is the key comparison.", choices:[
+      ], question:"Which page uses RooBank's known domain?", context:"A subdomain is the part before the main website name. For this check, compare the main website name.", choices:[
         {label:"Page A — roobank.example",correct:true,feedback:"Correct. The host www.roobank.example is under the known roobank.example domain."},
         {label:"Page B — roobank-login.example",correct:false,feedback:"This is a separate registered domain. Adding '-login' does not make it part of roobank.example."},
         {label:"Both pages, because both contain the word RooBank",correct:false,feedback:"Words in a hostname do not establish ownership. Compare the registered domains."}
-      ], explanation:"In www.roobank.example, the registered domain is roobank.example. In www.roobank-login.example, the registered domain is roobank-login.example. Those are different domains.", hint:"Find the part immediately before the top-level domain .example. Compare the whole registered name." },
-      { title:"The Digital ID", subtitle:"Read a simplified certificate", briefing:"The browser displays a certificate summary for the suspicious page. A certificate helps bind a public key to a domain name; it does not certify that a business is honest.", evidence:[
+      ], explanation:"In www.roobank.example, the registered domain is roobank.example. In www.roobank-login.example, the registered domain is roobank-login.example. Those are different domains.", hint:"Find the main website name just before .example. Compare the full name on both pages." },
+      { title:"The Digital ID", subtitle:"Read a simplified certificate", briefing:"The browser displays a certificate summary for the suspicious page. A digital certificate helps prove that a website controls a certain web address. It does not prove that the business is honest or safe.", evidence:[
         {label:"CERTIFICATE SUBJECT",value:"roobank-login.example"},
         {label:"SUBJECT ALT NAME (SAN)",value:"DNS:roobank-login.example"},
         {label:"ISSUER",value:"Example Public CA"},
         {label:"VALIDITY",value:"2026-01-01 through 2027-01-01"},
         {label:"BROWSER RESULT",value:"Certificate name matches the site"}
-      ], question:"The certificate matches roobank-login.example and is within its validity dates. What does that establish?", context:"Assume the browser also successfully validates the certificate chain and signature for this exercise.", choices:[
+      ], question:"The certificate matches roobank-login.example and is within its validity dates. What does that establish?", context:"For this activity, assume the browser has checked the certificate signatures and the full certificate chain.", choices:[
         {label:"The site is definitely operated by RooBank",correct:false,feedback:"A certificate for a look-alike domain does not prove that the site belongs to the real bank."},
-        {label:"The connection can authenticate that domain, but not prove the business is legitimate",correct:true,feedback:"Correct. The certificate authenticates control of the named domain for the connection; it does not establish the site's honesty or affiliation with RooBank."},
+        {label:"The connection can authenticate that domain, but not prove the business is legitimate",correct:true,feedback:"Correct. The certificate helps show that the site controls that web address. It does not prove that the site belongs to the real RooBank."},
         {label:"The website is safe because it uses encryption",correct:false,feedback:"Encryption protects data in transit to that site. It does not make a malicious destination trustworthy."}
-      ], explanation:"HTTPS and a valid certificate help protect a connection and authenticate the hostname. A malicious operator can obtain a valid certificate for a domain they control.", hint:"Separate two questions: is the connection encrypted, and is this actually the bank's domain?" },
+      ], explanation:"HTTPS and a valid certificate help protect information sent to a website. But a scammer can also get a valid certificate for a fake website they own.", hint:"Separate two questions: is the connection encrypted, and is this actually the bank's domain?" },
       { title:"Can We Trust It?", subtitle:"Understand HTTPS", briefing:"A customer says, 'The padlock was there, so I thought it was safe.' The security team needs a clear explanation.", evidence:[
         {label:"CONNECTION",value:"HTTPS enabled"},
         {label:"CERTIFICATE",value:"Valid for roobank-login.example"},
@@ -89,10 +89,10 @@ const scenarios: Scenario[] = [
         {label:"SERIAL",value:"4A:91:0C:77"},
         {label:"VALIDITY",value:"2026-09-01 to 2027-09-01"}
       ],question:"Which field should be checked to determine whether the certificate covers the hostname being visited?",context:"Modern TLS hostname verification relies on Subject Alternative Name (SAN), not just the legacy Common Name.",choices:[
-        {label:"The certificate serial number",correct:false,feedback:"The serial number identifies a certificate within an issuer's scope. It does not tell you which hostnames it covers."},
+        {label:"The certificate serial number",correct:false,feedback:"The serial number is an ID for the certificate. It does not tell you which website names the certificate covers."},
         {label:"The Subject Alternative Name (SAN)",correct:true,feedback:"Correct. SAN lists the DNS names or other identities for which the certificate is valid."},
-        {label:"The issuer's display name",correct:false,feedback:"The issuer identifies the CA that signed the certificate, not the hostname the certificate covers."}
-      ],explanation:"For TLS server identity, clients check that the requested hostname matches an identity in SAN. The CN field is legacy and should not be treated as a substitute in modern validation.",hint:"Which certificate extension lists the DNS names the certificate covers?"},
+        {label:"The issuer's display name",correct:false,feedback:"The issuer tells you which Certificate Authority (CA) signed the certificate. It does not tell you which website names are covered."}
+      ],explanation:"When a browser checks a website certificate, it looks at the Subject Alternative Name (SAN) to see which website names are covered. Do not rely only on the older Common Name (CN) field.",hint:"Which certificate extension lists the DNS names the certificate covers?"},
       {title:"Who Issued It?",subtitle:"Identify the issuer and its role",briefing:"The certificate was signed by Northstar Intermediate CA 02. The team has supplied a simplified issuer record.",evidence:[
         {label:"SERVER CERTIFICATE",value:"login.roobank.example"},
         {label:"ISSUER",value:"Northstar Intermediate CA 02"},
@@ -102,17 +102,17 @@ const scenarios: Scenario[] = [
         {label:"It encrypts all customer passwords before they reach the server",correct:false,feedback:"The CA's role is certificate issuance and signing, not application-level password encryption."},
         {label:"It issues or signs end-entity certificates and chains trust toward a trusted root",correct:true,feedback:"Correct. The intermediate CA links the server certificate to a root CA trusted by the client."},
         {label:"It guarantees that RooBank owns the domain and operates ethically",correct:false,feedback:"A CA validates domain control or identity according to its certificate policy. It does not guarantee ethical business conduct."}
-      ],explanation:"A typical chain is server/leaf certificate → intermediate CA → trusted root CA. The client validates signatures and constraints along the path, plus hostname and validity checks.",hint:"Think of the intermediate as the link between the server certificate and the trusted root."},
+      ],explanation:"A certificate chain usually goes from the website's certificate, to an intermediate Certificate Authority, and then to a trusted root Certificate Authority. The browser checks the signatures, website name, and dates along the way.",hint:"Think of the intermediate as the link between the server certificate and the trusted root."},
       {title:"Follow the Trust Chain",subtitle:"Build the chain in the right order",briefing:"The certificate viewer lists three certificates. The analyst needs to verify the relationship, not just recognize a familiar name.",evidence:[
         {label:"LEAF / SERVER",value:"login.roobank.example"},
         {label:"INTERMEDIATE",value:"Northstar Intermediate CA 02"},
         {label:"ROOT",value:"Northstar Root CA"},
         {label:"CLIENT TRUST STORE",value:"Northstar Root CA present"}
-      ],question:"Which sequence correctly follows the certificate path from the website toward the trust anchor?",context:"A chain is validated from the end-entity certificate through its issuing CA certificates to a trusted root.",choices:[
+      ],question:"Which sequence correctly follows the certificate path from the website toward the trust anchor?",context:"The browser checks the website's certificate first, follows the issuing certificates, and ends at a root certificate it already trusts.",choices:[
         {label:"Root → Intermediate → Server",correct:false,feedback:"That is the opposite direction from the server certificate toward its trust anchor."},
         {label:"Server / Leaf → Intermediate → Root",correct:true,feedback:"Correct. The leaf certificate is signed by the intermediate, which chains to the root trust anchor."},
         {label:"Server → Root → Intermediate",correct:false,feedback:"The intermediate certificate sits between the server certificate and the root."}
-      ],explanation:"A trusted root in the local trust store anchors the path. The signatures, validity periods, CA constraints, key usage, and hostname must also validate.",hint:"Start with the certificate presented by the website. Follow its issuer upward."},
+      ],explanation:"The trusted root certificate is the starting point for trust. The browser must also check the signatures, dates, allowed uses, and website name.",hint:"Start with the certificate presented by the website. Follow its issuer upward."},
       {title:"The Technical Inspection",subtitle:"Check the details that can invalidate trust",briefing:"A second export contains validation findings. One certificate in the chain has a problem that a familiar issuer name cannot fix.",evidence:[
         {label:"LEAF SAN",value:"DNS:login.roobank.example"},
         {label:"LEAF VALIDITY",value:"Current"},
@@ -123,15 +123,15 @@ const scenarios: Scenario[] = [
         {label:"Accept it because the hostname and dates match",correct:false,feedback:"Hostname and validity checks do not override a confirmed revocation under the stated policy."},
         {label:"Reject the chain and escalate the certificate / CA issue",correct:true,feedback:"Correct. A revoked certificate in the chain is a trust failure in this scenario."},
         {label:"Ignore revocation because the root CA is in the trust store",correct:false,feedback:"A trusted root does not make every certificate issued beneath it trustworthy forever."}
-      ],explanation:"Certificate validation is multi-factor. Hostname match, validity, signatures, constraints, key usage, and revocation status all matter. Revocation checking behavior can vary by client and policy; here the exercise explicitly confirms the revocation result.",hint:"A valid signature proves who signed a certificate; it does not prove the certificate has not been revoked."},
+      ],explanation:"A browser checks several things before trusting a certificate: the website name, dates, signatures, allowed uses, and whether the certificate has been revoked. For this activity, the revocation check has already confirmed a problem.",hint:"A valid signature proves who signed a certificate; it does not prove the certificate has not been revoked."},
       {title:"The Verdict",subtitle:"Write the technical determination",briefing:"The incident lead needs a concise determination before the suspicious endpoint is removed from service.",evidence:[
         {label:"HOSTNAME",value:"SAN matches login.roobank.example"},
         {label:"ISSUER",value:"Northstar Intermediate CA 02"},
         {label:"CHAIN",value:"Server → Intermediate → Root"},
         {label:"REVOCATION",value:"Intermediate confirmed revoked"}
       ],question:"What is the defensible trust decision?",context:"Use all the evidence, not just the hostname or issuer name.",choices:[
-        {label:"Trust the endpoint because the certificate name matches",correct:false,feedback:"Hostname match is necessary but not sufficient. The confirmed revoked intermediate is a critical failure."},
-        {label:"Do not trust the chain; preserve the records and escalate to PKI / incident response",correct:true,feedback:"Correct. The analyst should document the failed validation, preserve certificate details, and escalate through the PKI and incident-response process."},
+        {label:"Trust the endpoint because the certificate name matches",correct:false,feedback:"The website name matching is not enough. One of the certificates in the chain has been revoked, so the browser should not trust this connection."},
+        {label:"Do not trust the chain; preserve the records and escalate to PKI / incident response",correct:true,feedback:"Correct. Record what failed, save the certificate details, and report the problem to the team responsible for certificates and security."},
         {label:"Trust it because the root CA is installed",correct:false,feedback:"The root is a trust anchor, but revocation and other path checks still apply."}
       ],explanation:"Your report should distinguish the field that matched (SAN) from the validation failure (revoked intermediate). Accurate analysis explains both.",hint:"State the positive checks and the failed check. One does not cancel the other."}
     ]
