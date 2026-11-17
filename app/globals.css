@@ -615,3 +615,35 @@ h2 { margin: 12px 0 0; font-family: 'Barlow Condensed', sans-serif; font-size: 4
   .mission4-confirm-row { align-items:stretch; flex-direction:column; }
   .mission4-confirm-row .primary-button { width:100%; }
 }
+
+
+/* Mission 5 — Incident Response */
+.ir-status-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:12px 0 18px}
+.ir-status-strip>div{display:flex;flex-direction:column;gap:6px;padding:12px 14px;border:1px solid var(--line);background:#0d151c}
+.ir-status-strip span,.ir-outcome span{color:#7e8e98;font:8px 'DM Mono',monospace;letter-spacing:.7px}
+.ir-status-strip strong{color:var(--cyan);font:10px 'DM Mono',monospace;line-height:1.5}
+.ir-status-strip .ir-danger{color:#ff7566}.ir-status-strip .ir-warning{color:#f0c15e}
+.ir-learning-note{display:flex;gap:12px;align-items:flex-start;margin:12px 0;padding:13px 15px;border:1px solid #31564f;background:#10201f;color:#b9cbc7;font-size:11px;line-height:1.7}
+.ir-learning-note strong{flex:0 0 auto;color:var(--cyan);font:9px 'DM Mono',monospace;letter-spacing:.7px}
+.ir-consequence{display:flex;gap:12px;align-items:flex-start;margin:12px 0;padding:13px 15px;border:1px solid #806a36;background:#241f14;color:#e2c98e;font-size:10px;line-height:1.7}
+.ir-consequence strong{flex:0 0 auto;color:#f0c15e;font:9px 'DM Mono',monospace;letter-spacing:.6px}
+.ir-consequence-danger{border-color:#82413b;background:#281718;color:#e5b7b1}
+.ir-consequence-danger strong{color:#ff8b78}
+.ir-cost{color:#f0c15e;font:8px 'DM Mono',monospace}
+.ir-principles{padding:15px;border:1px solid var(--line);background:#101922}
+.ir-principles>div{display:flex;align-items:center;gap:10px;margin-top:12px;color:#8e9da6;font-size:10px}
+.ir-principles>div i{display:grid;place-items:center;width:23px;height:23px;border:1px solid #34444e;color:#82939d;font:8px 'DM Mono',monospace;font-style:normal}
+.ir-principles>div.ir-check-done{color:#c5d5d1}
+.ir-principles>div.ir-check-done i{border-color:#3e8977;color:var(--cyan);background:#102622}
+.ir-report-panel textarea{width:100%;margin:12px 0;padding:14px;border:1px solid #354550;background:#0b1319;color:#edf2f4;font:12px/1.7 'DM Sans',sans-serif;resize:vertical}
+.ir-report-panel textarea:focus{outline:1px solid var(--cyan)}
+.ir-report-panel .primary-button{border:0;cursor:pointer}
+.ir-report-panel .primary-button:disabled{opacity:.35;cursor:not-allowed}
+.ir-report-panel>small{display:block;margin-top:10px;color:#7f8e98;font:8px 'DM Mono',monospace;line-height:1.7}
+.ir-report-meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:#82919b;font:8px 'DM Mono',monospace;letter-spacing:.5px}
+.report-review pre{margin:14px 0 0;white-space:pre-wrap;overflow-wrap:anywhere;color:#c1cbd0;font:10px/1.8 'DM Mono',monospace}
+.ir-outcome{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px 0 20px}
+.ir-outcome>div{display:flex;flex-direction:column;gap:6px;padding:12px 14px;border:1px solid var(--line);background:#0b1218}
+.ir-outcome strong{color:var(--cyan);font:700 24px 'Barlow Condensed',sans-serif}
+@media(max-width:700px){.ir-status-strip{grid-template-columns:1fr}.ir-learning-note,.ir-consequence{flex-direction:column;gap:5px}.ir-outcome{gap:5px}.ir-outcome>div{padding:9px}.ir-outcome span{font-size:7px}.ir-report-meta{flex-direction:column}}
+@media print{.game-nav,.completion-mark,.completion-actions,.game-footer{display:none!important}.completion-panel{margin:0!important;padding:0!important}.report-review{border:0!important;background:#fff!important}.report-review pre{color:#111!important;font-size:9pt!important}.completion-shell,.game-shell{background:#fff!important;color:#111!important}}
