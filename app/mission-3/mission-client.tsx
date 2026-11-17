@@ -261,6 +261,7 @@ export default function MissionThreeClient() {
   const [certificate, setCertificate] = useState(false);
   const [hashName, setHashName] = useState("");
   const [hashDigest, setHashDigest] = useState("");
+  const [baselineDigest, setBaselineDigest] = useState("");
   const [hashMatch, setHashMatch] = useState<boolean | null>(null);
   const [hashBusy, setHashBusy] = useState(false);
   const [stegoMessage, setStegoMessage] = useState("");
@@ -271,6 +272,8 @@ export default function MissionThreeClient() {
   const imageCanvas = useRef<HTMLCanvasElement>(null);
   const scenario = scenarios.find((item) => item.id === scenarioId);
   const current = scenario?.stages[stage];
+
+  useEffect(() => { sha256(new File([originalAttachment], "archive-reference.txt", { type: "text/plain" })).then(setBaselineDigest).catch(() => setBaselineDigest("Web Crypto unavailable")); }, []);
 
   useEffect(() => {
     try {
@@ -301,6 +304,8 @@ export default function MissionThreeClient() {
   useEffect(() => {
     if (current?.kind === "stego" && imageCanvas.current && scenario) setStegoUrl(makeEvidencePng(imageCanvas.current, scenario.hiddenMessage));
   }, [current?.kind, scenario]);
+
+  useEffect(() => { if (scenario) setCipherShift(scenario.cipherShift); }, [scenario]);
 
   const score = useMemo(() => scenario ? Object.entries(answers).filter(([key, value]) => scenario.stages[Number(key)]?.choices?.[value]?.correct).length : 0, [scenario, answers]);
   const completed = scenario ? scenario.stages.filter((item, index) => item.kind === "hash" ? hashMatch === false : item.kind === "stego" ? stegoMessage === scenario?.hiddenMessage : item.kind === "cipher" ? cipherGuess.trim() === scenario?.cipherAnswer : answers[index] !== undefined).length : 0;
