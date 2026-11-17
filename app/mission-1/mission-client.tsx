@@ -124,11 +124,7 @@ export default function MissionOneClient() {
   useEffect(() => {
     if (!progressLoaded) return;
     try {
-      if (!progressLoaded) {
-    return <main className="game-shell"><div className="eyebrow">LOADING SAVED INVESTIGATION…</div></main>;
-  }
-
-  if (level === null) {
+      if (level === null) {
         window.localStorage.removeItem("breach:mission-1:v1");
         return;
       }
@@ -161,6 +157,10 @@ export default function MissionOneClient() {
   function startLevel(id: number) {
     setRestoredProgress(false);
     setLevel(id); setAnswers({}); setReport(""); setSubmitted(false); setDeepDive(false); setShowHint(false); setActiveBranch("phishing"); setStudentName(""); setCertificateReady(false);
+  }
+
+  if (!progressLoaded) {
+    return <main className="game-shell"><div className="eyebrow">LOADING SAVED INVESTIGATION…</div></main>;
   }
 
   if (level === null) {
