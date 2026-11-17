@@ -115,7 +115,7 @@ const scenarios: Scenario[] = [
         {label:"LEAF SAN",value:"DNS:login.roobank.example"},
         {label:"LEAF VALIDITY",value:"Current"},
         {label:"CHAIN SIGNATURES",value:"Valid"},
-        {label:"INTERMEDIATE STATUS",value:"Revoked — serial 4A:91:0C:77 listed by issuer"},
+        {label:"INTERMEDIATE STATUS",value:"Revoked — serial 88:2C:10:AB listed by issuer"},
         {label:"CLIENT RESULT",value:"Revocation status confirmed"}
       ],question:"What should the analyst conclude when the issuing intermediate is confirmed revoked?",context:"For this controlled exercise, assume the client successfully obtains authoritative revocation information and policy requires rejecting this chain.",choices:[
         {label:"Accept it because the hostname and dates match",correct:false,feedback:"Hostname and validity checks do not override a confirmed revocation under the stated policy."},
