@@ -38,7 +38,7 @@ const stages: Stage[] = [
       { label: "16:43:02", value: "PC-14  →  FILE-SRV-01  |  TCP 445  |  established baseline session" },
       { label: "BASELINE", value: "PC-22 has no prior SMB session to FILE-SRV-01 in the supplied 30-day sample" },
     ],
-    question: "Which connection is the strongest indicator of possible lateral movement?",
+    question: "Which connection is the strongest clue that an attacker may be moving from one computer to another?",
     context: "Lateral movement happens when an attacker gets into one computer and then tries to reach other computers on the same network.",
     options: [
       { label: "The new SMB session from PC-22 to FILE-SRV-01", correct: true, feedback: "Correct. The new source-to-server relationship is unusual for PC-22 and follows the suspicious outbound event." },
@@ -70,8 +70,8 @@ const stages: Stage[] = [
     targetId: "auth",
   },
   {
-    title: "Contain Without Causing More Damage", subtitle: "Choose a proportionate response",
-    briefing: "The incident lead asks for an immediate recommendation. The evidence points to PC-22 as the likely initial affected endpoint, but FILE-SRV-01 and the service account need validation.",
+    title: "Contain Without Causing More Damage", subtitle: "Choose a response that targets the problem",
+    briefing: "The team needs your recommendation. PC-22 is the computer most likely affected, but the team still needs to check FILE-SRV-01 and the service account.",
     evidence: [
       { label: "LIKELY AFFECTED ENDPOINT", value: "PC-22 — suspicious outbound session and new internal SMB activity" },
       { label: "SYSTEM TO VALIDATE", value: "FILE-SRV-01 — unusual access attempt; compromise not confirmed" },
@@ -93,9 +93,9 @@ const stages: Stage[] = [
     title: "Make the Incident Call", subtitle: "Separate confirmed facts from open questions",
     briefing: "The team needs a short incident determination before the handoff to Mission 5. Your report must distinguish what the logs establish from what still needs confirmation.",
     evidence: [
-      { label: "SUPPORTED BY LOGS", value: "PC-22 made an unusual outbound connection, opened a new SMB session, and initiated an anomalous service-account sign-in" },
+      { label: "SUPPORTED BY LOGS", value: "PC-22 connected to an unusual website, opened a new connection to a file server, and used a service account in an unusual way" },
       { label: "NOT YET CONFIRMED", value: "Data exfiltration, database access, and full compromise of FILE-SRV-01" },
-      { label: "NEXT COLLECTION", value: "Endpoint timeline, FILE-SRV-01 access records, DNS history, and svc-backup ownership / use" },
+      { label: "NEXT COLLECTION", value: "PC-22 activity, FILE-SRV-01 access records, website lookup history, and details about the svc-backup account" },
       { label: "NEXT MISSION", value: "Incident Response — scope, contain, eradicate, recover" },
     ],
     question: "Which incident statement is the most accurate?",
@@ -253,7 +253,7 @@ export default function MissionFourClient() {
       <MissionScoreboard score={score + (completed === 5 && report.trim().length >= 80 ? 15 + timeBonus : 0)} hintsUsed={hintsUsed} completed={completed} total={5} />
       <div className="mission4-layout">
         <section className="evidence-panel">
-          <div className="evidence-heading"><div><div className="panel-kicker">STAGE 0{stage + 1} / NETWORK TELEMETRY</div><h2>{current.title}</h2><p>{current.subtitle}</p></div><span className="evidence-count">{current.evidence.length} RECORDS</span></div>
+          <div className="evidence-heading"><div><div className="panel-kicker">STAGE 0{stage + 1} / NETWORK LOGS</div><h2>{current.title}</h2><p>{current.subtitle}</p></div><span className="evidence-count">{current.evidence.length} RECORDS</span></div>
           <div className="mission2-briefing">{current.briefing}</div>
           <div className="mission2-evidence">{current.evidence.map((item) => <div className="mission2-evidence-row" key={item.label}><span>{item.label}</span><strong>{item.value}</strong></div>)}</div>
           <div className="challenge-card"><div className="challenge-number">DECISION {stage + 1} / 5</div><h3>{current.question}</h3><p className="challenge-context">{current.context}</p><div className="choice-list">{current.options.map((option, index) => <button type="button" key={option.label} disabled={answers[stage] !== undefined || !running} className={"choice-button " + (answers[stage] === index ? (option.correct ? "choice-correct" : "choice-wrong") : "") + (answers[stage] !== undefined && option.correct ? " choice-reveal" : "")} onClick={() => choose(index)}><span className="choice-letter">{String.fromCharCode(65 + index)}</span><span>{option.label}</span>{answers[stage] === index && <b>{option.correct ? "✓" : "×"}</b>}</button>)}</div>{answers[stage] !== undefined && <div className={"feedback-box " + (current.options[answers[stage]].correct ? "" : "feedback-review")}><strong>{current.options[answers[stage]].correct ? "ANALYST NOTE — CORRECT" : "ANALYST NOTE — REVIEW"}</strong><p>{current.options[answers[stage]].feedback}</p><small>{current.explanation}</small></div>}</div>
