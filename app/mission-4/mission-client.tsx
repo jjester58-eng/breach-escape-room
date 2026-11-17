@@ -159,7 +159,6 @@ export default function MissionFourClient() {
   const timeBonus = difficulty && !expired ? Math.min(10, Math.floor((remaining / DIFFICULTY_TIMES[difficulty]) * 10)) : 0;
   const canSubmit = completed === stages.length && report.trim().length >= 80;
   const current = stages[stage];
-  const selected = nodes.find((node) => node.id === selectedNode) ?? nodes[0];
 
   function start(nextDifficulty: DifficultyId) {
     const duration = DIFFICULTY_TIMES[nextDifficulty];
