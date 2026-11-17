@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { InvestigationHeatmap, type HeatNode } from "@/components/breach/MissionRuntime";
+import { MISSION_RUNTIME_CONFIG } from "@/lib/breach/mission-runtime";
 
 type Choice = { label: string; correct: boolean; feedback: string };
 type Stage = {
@@ -274,6 +276,7 @@ export default function MissionThreeClient() {
   const [submitted, setSubmitted] = useState(false);
   const [studentName, setStudentName] = useState("");
   const [certificate, setCertificate] = useState(false);
+  const [selectedHeatNode, setSelectedHeatNode] = useState("hash");
   const [hashName, setHashName] = useState("");
   const [hashDigest, setHashDigest] = useState("");
   const [baselineDigest, setBaselineDigest] = useState("");
@@ -325,6 +328,10 @@ export default function MissionThreeClient() {
   const score = useMemo(() => scenario ? Object.entries(answers).filter(([key, value]) => scenario.stages[Number(key)]?.choices?.[value]?.correct).length : 0, [scenario, answers]);
   const completed = scenario ? scenario.stages.filter((item, index) => item.kind === "hash" ? hashMatch === false : item.kind === "stego" ? stegoMessage === scenario?.hiddenMessage : item.kind === "cipher" ? cipherGuess.trim() === scenario?.cipherAnswer : answers[index] !== undefined).length : 0;
   const allComplete = scenario ? scenario.stages.every((item, index) => item.kind === "hash" ? hashMatch === false : item.kind === "stego" ? stegoMessage === scenario?.hiddenMessage : item.kind === "cipher" ? cipherGuess.trim() === scenario?.cipherAnswer : answers[index] !== undefined) : false;
+  const heatNodes: HeatNode[] = MISSION_RUNTIME_CONFIG["mission-3"].targets.map((target,index) => {
+    const proximity = index === 0 ? (hashMatch === false ? 88 : hashMatch === true ? 28 : 10) : index === 1 ? (stegoMessage === scenario?.hiddenMessage ? 92 : stegoMessage ? 18 : 10) : index === 2 ? (cipherGuess.trim() === scenario?.cipherAnswer ? 92 : cipherGuess.trim() ? 18 : 10) : (scenario?.stages[0]?.choices[answers[0]]?.correct ? 82 : answers[0] !== undefined ? 12 : 10);
+    return { ...target, proximity };
+  });
 
   function start(id: Scenario["id"]) {
     setScenarioId(id); setStage(0); setAnswers({}); setReport(""); setHintOpen(false); setSubmitted(false); setRestored(false);
@@ -388,6 +395,7 @@ export default function MissionThreeClient() {
       {restored && <div className="restore-notice">SAVED INVESTIGATION RESTORED — Your answers and report were recovered from this browser.</div>}
       <div className="autosave-strip"><span>✓ AUTO-SAVE ON THIS DEVICE</span><button onClick={reset}>START OVER ↻</button></div>
       <div className="progress-wrap"><div className="progress-label"><span>FORENSIC INVESTIGATION PROGRESS</span><strong>{completed} / 5 STAGES</strong></div><div className="progress-track"><div className="progress-fill" style={{width:(completed / 5 * 100) + "%"}}/></div></div>
+      <InvestigationHeatmap nodes={heatNodes} selectedId={selectedHeatNode} onSelect={setSelectedHeatNode} />
       <section className="scenario-panel"><div className="panel-kicker">CASE BRIEF / {scenario.role}</div><h2>{scenario.title}</h2><p>{scenario.intro}</p><div className="scenario-meta"><span>{scenario.technical.toUpperCase()}</span><span>STAGE {stage + 1} OF 5</span><span>SIMULATED EVIDENCE</span></div></section>
       <div className="mission2-workspace">
         <aside className="branch-sidebar"><div className="panel-kicker">INVESTIGATION STAGES</div><p className="sidebar-intro">Complete each stage to build your final determination. You can revisit completed stages.</p>{scenario.stages.map((item,index)=><button key={item.title} className={"branch-button " + (stage === index ? "branch-selected" : "") + ((item.kind === "hash" ? hashMatch === false : item.kind === "stego" ? stegoMessage === scenario.hiddenMessage : item.kind === "cipher" ? cipherGuess.trim() === scenario.cipherAnswer : answers[index] !== undefined) ? " branch-done" : "")} onClick={() => {setStage(index);setHintOpen(false);}}><span className="branch-icon">{String(index + 1).padStart(2,"0")}</span><span className="branch-button-copy"><strong>{item.title}</strong><small>{item.subtitle}</small></span><span className="branch-check">{(item.kind === "hash" ? hashMatch === false : item.kind === "stego" ? stegoMessage === scenario.hiddenMessage : item.kind === "cipher" ? cipherGuess.trim() === scenario.cipherAnswer : answers[index] !== undefined) ? "✓" : "↗"}</span></button>)}<div className="hint-box"><button className="hint-toggle" onClick={() => setHintOpen((v) => !v)}>{hintOpen ? "HIDE" : "SHOW"} INVESTIGATOR HINT</button>{hintOpen && <p>{current?.hint}</p>}</div></aside>
