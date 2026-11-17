@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-type Choice = { label: string; correct: boolean; feedback: string };
+type SavedProgress = { version: 1; level: number; activeBranch: string; answers: Record<string, number>; report: string; submitted: boolean; showHint: boolean; deepDive: boolean; studentName: string; certificateReady: boolean; savedAt: string };\n\ntype Choice = { label: string; correct: boolean; feedback: string };
 type Challenge = { prompt: string; context: string; choices: Choice[]; explain: string };
 type Branch = { id: string; title: string; subtitle: string; icon: string; evidence: string[]; challenges: Challenge[] };
 
@@ -132,7 +132,7 @@ export default function MissionOneClient() {
           <div className="completion-mark">✓</div>
           <div className="eyebrow">MISSION 01 / REPORT RECEIVED</div>
           <h1 className="game-title">INITIAL ACCESS<br/><em>INVESTIGATED</em><span className="accent">.</span></h1>
-          <p className="game-lead">You completed {selectedLevel?.title}. Your findings have been recorded in this session.</p>
+          <p className="game-lead">You completed {selectedLevel?.title}. Your findings and completion details are saved on this browser.</p><div className="autosave-strip"><span>✓ COMPLETION SAVED ON THIS DEVICE</span></div>
           <div className="completion-stats"><div><strong>{score}</strong><span>ACCURATE DECISIONS</span></div><div><strong>{completedBranches}</strong><span>BRANCHES COMPLETED</span></div><div><strong>LEVEL {level}</strong><span>DIFFICULTY</span></div></div>
           <div className="report-review"><div className="panel-kicker">YOUR INCIDENT SUMMARY</div><p>{report}</p></div>
           {!certificateReady ? (
@@ -179,6 +179,8 @@ export default function MissionOneClient() {
     <main className="game-shell">
       <nav className="game-nav"><Link className="brand" href="/"><span className="brand-mark">B</span><span>BREACH<span className="brand-period">.</span></span></Link><div className="mission-nav-label">MISSION 01 <span>/</span> THE INFILTRATION</div><span className="topbar-status"><i /> LEVEL {level} ACTIVE</span></nav>
       <div className="play-header"><div><Link href="/mission-1" className="back-link">← CHANGE LEVEL</Link><div className="eyebrow">OPERATION PAYROLL / CASE 0417-A</div><h1 className="play-title">INVESTIGATION <em>DESK</em></h1></div><div className="play-meta"><strong>{selectedLevel?.time}</strong><span>ESTIMATED COMPLETION</span></div></div>
+      <div className="autosave-strip"><span>✓ AUTO-SAVE ON THIS DEVICE</span><button onClick={() => { if (window.confirm("Start this investigation over? Your saved answers and report on this browser will be erased.")) { window.localStorage.removeItem("breach:mission-1:v1"); startLevel(level); } }}>START OVER ↻</button></div>
+      {restoredProgress && <div className="restore-notice">SAVED INVESTIGATION RESTORED — You can continue where you left off. Your work is saved automatically on this browser.</div>}
       <div className="progress-wrap"><div className="progress-label"><span>INVESTIGATION PROGRESS</span><strong>{Math.min(completedBranches, requiredBranches)} / {requiredBranches} REQUIRED BRANCHES</strong></div><div className="progress-track"><div className="progress-fill" style={{ width: progress + "%" }} /></div></div>
       <section className="email-panel"><div className="email-toolbar"><span>INCOMING MESSAGE / EMPLOYEE REPORT</span><span className="alert-pill">SUSPICIOUS</span></div><div className="email-body"><div className="email-line"><span>FROM</span><strong>District Payroll Services &lt;payroll-update@district-payroll.example&gt;</strong></div><div className="email-line"><span>SUBJECT</span><strong>Action Required — Payroll Information Update</strong></div><p>Please review the attached payroll update and verify your information by 3:00 PM today to prevent delays to your next paycheck.</p><div className="email-attachment">▤ &nbsp; Payroll_Update.pdf &nbsp; <small>ATTACHMENT</small></div><div className="email-link">↗ &nbsp; district-payroll-update.example</div></div></section>
       <div className="investigation-layout">
