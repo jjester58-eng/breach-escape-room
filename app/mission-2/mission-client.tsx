@@ -20,7 +20,7 @@ const scenarios: Scenario[] = [
   {
     id: "rookie", role: "ROOKIE INVESTIGATOR", title: "The Fake Front Door", time: "20–30 MIN",
     description: "A customer reports being redirected to a suspicious RooBank login page. Follow the clues and decide which website is really the bank.",
-    technical: "URLs · domains · HTTPS · certificate basics",
+    technical: "Website addresses · domains · HTTPS · certificate basics",
     intro: "RooBank customers are receiving messages about a required account review. One customer says the login page looked exactly like the real bank. Your first job is to identify the suspicious destination before anyone enters credentials.",
     stages: [
       { title: "The Suspicious Link", subtitle: "Start with the message", briefing: "A RooBank customer forwards this fictional message to the security team. The message claims the customer's account will be paused unless they sign in today.", evidence: [
@@ -79,7 +79,7 @@ const scenarios: Scenario[] = [
   {
     id: "analyst", role: "SECURITY ANALYST", title: "The Stolen Identity", time: "35–50 MIN",
     description: "A suspicious server presents a certificate that appears legitimate. Inspect the certificate fields and reconstruct the chain of trust.",
-    technical: "X.509 · SAN · issuers · root and intermediate CAs · signatures · revocation",
+    technical: "Certificate details · website names (SAN) · trusted issuers · signatures · revoked certificates",
     intro: "RooBank's IT team has found a second login endpoint. Its certificate looks professional and was issued by a familiar certificate authority. Your job is to determine what the certificate actually proves and whether the chain can be trusted.",
     stages: [
       {title:"The Unexpected Certificate",subtitle:"Inspect the certificate record",briefing:"The help desk exports a certificate summary from the suspicious endpoint. Do not rely on the display name; inspect the fields.",evidence:[
@@ -88,7 +88,7 @@ const scenarios: Scenario[] = [
         {label:"ISSUER",value:"Northstar Intermediate CA 02"},
         {label:"SERIAL",value:"4A:91:0C:77"},
         {label:"VALIDITY",value:"2026-09-01 to 2027-09-01"}
-      ],question:"Which field should be checked to determine whether the certificate covers the hostname being visited?",context:"Modern TLS hostname verification relies on Subject Alternative Name (SAN), not just the legacy Common Name.",choices:[
+      ],question:"Which field should be checked to determine whether the certificate covers the hostname being visited?",context:"A browser checks the Subject Alternative Name (SAN) field to see which website names the certificate covers. The older Common Name field is not enough.",choices:[
         {label:"The certificate serial number",correct:false,feedback:"The serial number is an ID for the certificate. It does not tell you which website names the certificate covers."},
         {label:"The Subject Alternative Name (SAN)",correct:true,feedback:"Correct. SAN lists the DNS names or other identities for which the certificate is valid."},
         {label:"The issuer's display name",correct:false,feedback:"The issuer tells you which Certificate Authority (CA) signed the certificate. It does not tell you which website names are covered."}
@@ -124,7 +124,7 @@ const scenarios: Scenario[] = [
         {label:"Reject the chain and escalate the certificate / CA issue",correct:true,feedback:"Correct. A revoked certificate in the chain is a trust failure in this scenario."},
         {label:"Ignore revocation because the root CA is in the trust store",correct:false,feedback:"A trusted root does not make every certificate issued beneath it trustworthy forever."}
       ],explanation:"A browser checks several things before trusting a certificate: the website name, dates, signatures, allowed uses, and whether the certificate has been revoked. For this activity, the revocation check has already confirmed a problem.",hint:"A valid signature proves who signed a certificate; it does not prove the certificate has not been revoked."},
-      {title:"The Verdict",subtitle:"Write the technical determination",briefing:"The incident lead needs a concise determination before the suspicious endpoint is removed from service.",evidence:[
+      {title:"The Verdict",subtitle:"Write the technical determination",briefing:"The team needs your recommendation before taking the suspicious website offline.",evidence:[
         {label:"HOSTNAME",value:"SAN matches login.roobank.example"},
         {label:"ISSUER",value:"Northstar Intermediate CA 02"},
         {label:"CHAIN",value:"Server → Intermediate → Root"},
@@ -138,8 +138,8 @@ const scenarios: Scenario[] = [
   },
   {
     id: "commander",role:"INCIDENT COMMANDER",title:"The Broken Chain",time:"50–70 MIN",
-    description:"Customers are reaching an attacker-controlled service through a connection that appears valid. Correlate DNS, TLS, CA, and incident records, then make response decisions.",
-    technical:"DNS · TLS identity · CA compromise / misissuance · revocation · incident response",
+    description:"Customers are reaching a website controlled by an attacker, even though the secure connection looks normal. Compare the website lookup, certificate, and incident records before deciding what to do.",
+    technical:"Website lookup · secure connection · certificate problems · revoked certificates · response steps",
     intro:"RooBank's monitoring team has identified a suspected impersonation incident. The attacker-controlled endpoint presents a certificate that passes routine browser checks. You must separate what is known from what is assumed, determine the trust failure, and prioritize the response.",
     stages:[
       {title:"The Trusted Connection",subtitle:"Question a successful TLS session",briefing:"A customer used a saved RooBank bookmark. The browser showed HTTPS and no certificate warning. The customer still reached an unexpected page.",evidence:[
@@ -152,7 +152,7 @@ const scenarios: Scenario[] = [
         {label:"The site is safe because TLS succeeded",correct:false,feedback:"TLS success means the connection passed the checks performed by the client. It does not prove the DNS answer or service is benign."},
         {label:"The DNS result is anomalous and needs investigation; TLS success alone does not resolve the concern",correct:true,feedback:"Correct. Preserve the DNS and TLS observations and investigate the unexpected address and certificate issuance."},
         {label:"The certificate must be fake because the IP is unexpected",correct:false,feedback:"An unexpected IP does not by itself prove a certificate is fake. Hosting, CDN, routing, or DNS changes can affect addresses; correlate evidence."}
-      ],explanation:"Avoid jumping from one indicator to a conclusion. A valid TLS session authenticates the hostname according to the certificate path the client accepted; it does not validate every aspect of DNS routing or application behavior.",hint:"Separate DNS resolution from TLS certificate validation. What did each system actually tell you?"},
+      ],explanation:"Avoid jumping from one indicator to a conclusion. A valid TLS session authenticates the hostname according to the certificate path the client accepted; it does not validate every aspect of DNS routing or application behavior.",hint:"DNS tells you which address a website points to. The certificate check tells you whether the website name matches the certificate. What did each check show?"},
       {title:"Conflicting Evidence",subtitle:"Correlate DNS and certificate records",briefing:"The network team provides a change record and a certificate transparency observation. No approved migration is listed.",evidence:[
         {label:"DNS CHANGE LOG",value:"secure.roobank.example → 203.0.113.77 at 09:14"},
         {label:"CHANGE TICKET",value:"No approved DNS change found"},
@@ -163,7 +163,7 @@ const scenarios: Scenario[] = [
         {label:"The DNS change, newly observed certificate, and absence of an approved change together",correct:true,feedback:"Correct. The correlated timing and lack of an approved change justify urgent investigation while the team verifies ownership and issuance."},
         {label:"The new IP address by itself",correct:false,feedback:"IP changes can be legitimate. The absence of authorization and correlated certificate event make this more concerning."},
         {label:"The certificate transparency entry by itself",correct:false,feedback:"Certificate transparency logs public certificate issuance; a logged certificate is not inherently malicious."}
-      ],explanation:"Certificate Transparency helps detect unexpected issuance, but it is not a certificate approval mechanism. Correlate issuance, DNS, change management, hosting, and service ownership.",hint:"Look for multiple independent records that align in time, plus the missing authorized change."},
+      ],explanation:"Certificate Transparency logs can help spot certificates that were issued unexpectedly. They do not approve a website. Compare the certificate records with website addresses, approved changes, hosting details, and who owns the service.",hint:"Look for multiple independent records that align in time, plus the missing authorized change."},
       {title:"The Compromised Trust",subtitle:"Investigate a misissued certificate",briefing:"The CA incident desk confirms that an intermediate issuing system was compromised. A certificate for secure.roobank.example was issued without RooBank's authorization.",evidence:[
         {label:"CA INCIDENT",value:"Northstar Intermediate CA 02 signing key suspected compromised"},
         {label:"ISSUED CERTIFICATE",value:"secure.roobank.example — serial 77:20:19"},
@@ -173,8 +173,8 @@ const scenarios: Scenario[] = [
       ],question:"What does the unauthorized certificate issuance indicate?",context:"The certificate was genuinely signed by a CA key, but the CA's issuance process was compromised.",choices:[
         {label:"The certificate is trustworthy because its signature is mathematically valid",correct:false,feedback:"A valid signature shows it was signed by the corresponding CA key. It does not prove the CA issued it appropriately or that the key was not compromised."},
         {label:"The CA's signing authority was abused, so the certificate must be treated as untrusted and investigated",correct:true,feedback:"Correct. A compromised or misused CA can issue a technically well-formed certificate that undermines trust."},
-        {label:"The root trust store automatically detects every unauthorized certificate",correct:false,feedback:"Trust stores do not independently know whether every issuance was authorized. Detection and response require CA controls, transparency, revocation, and monitoring."}
-      ],explanation:"PKI depends on both cryptography and trustworthy issuance operations. If an authorized signing key is compromised, attackers may obtain certificates that appear cryptographically valid until the issue is detected and mitigated.",hint:"A signature can be mathematically valid even when the issuance was unauthorized. What was compromised: the math or the authority?"},
+        {label:"The root trust store automatically detects every unauthorized certificate",correct:false,feedback:"A browser's trusted certificate list cannot tell whether every certificate was issued for a good reason. Teams also need checks, monitoring, and a way to report or revoke bad certificates."}
+      ],explanation:"PKI is the system that helps websites prove their identity using certificates. If a trusted certificate authority's signing key is stolen, an attacker may be able to create certificates that look real until the problem is found and fixed.",hint:"A signature can be mathematically valid even when the issuance was unauthorized. What was compromised: the math or the authority?"},
       {title:"Reconstruct the Attack",subtitle:"Build a defensible sequence",briefing:"You must present a timeline to the response team. The evidence is incomplete, so distinguish confirmed events from the likely attacker path.",evidence:[
         {label:"09:02",value:"Unauthorized certificate appears in CT log"},
         {label:"09:14",value:"DNS answer changes to unrecognized host"},
