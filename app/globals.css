@@ -603,3 +603,15 @@ h2 { margin: 12px 0 0; font-family: 'Barlow Condensed', sans-serif; font-size: 4
 @media(prefers-reduced-motion:reduce) {
   .timer-pulse-slow,.timer-pulse-medium,.timer-pulse-fast,.timer-pulse-urgent { animation:none; }
 }
+
+
+/* Mission 4: selecting a response is not the same as submitting it. */
+.choice-button.choice-selected { border-color:var(--cyan); background:#142b35; box-shadow:inset 3px 0 0 var(--cyan); }
+.choice-button.choice-selected .choice-letter { color:var(--cyan); border-color:var(--cyan); }
+.mission4-confirm-row { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:12px; padding:12px; border:1px solid #2b4650; background:#101e27; }
+.mission4-confirm-row > span { color:#aebdc4; font-size:11px; line-height:1.5; }
+.mission4-confirm-row .primary-button { flex:0 0 auto; }
+@media (max-width:600px) {
+  .mission4-confirm-row { align-items:stretch; flex-direction:column; }
+  .mission4-confirm-row .primary-button { width:100%; }
+}
