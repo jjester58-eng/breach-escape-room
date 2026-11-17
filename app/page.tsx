@@ -1,8 +1,8 @@
 import Link from "next/link";
 
 const missions = [
-  { number: "01", name: "The Infiltration", topic: "Phishing · Social Engineering · Malware", status: "PLAYABLE", active: true },
-  { number: "02", name: "The Impostor", topic: "Digital Certificates · PKI · Trust", status: "LOCKED" },
+  { number: "01", name: "The Infiltration", topic: "Phishing · Social Engineering · Malware", status: "PLAYABLE", href: "/mission-1" },
+  { number: "02", name: "The Impostor", topic: "Digital Certificates · PKI · Trust", status: "PLAYABLE", href: "/mission-2" },
   { number: "03", name: "Hidden Evidence", topic: "Steganography · Cryptography · Forensics", status: "LOCKED" },
   { number: "04", name: "Network Under Attack", topic: "Packets · Network Defense · Lateral Movement", status: "LOCKED" },
   { number: "05", name: "Incident Response", topic: "Risk · Containment · Recovery", status: "LOCKED" },
@@ -23,7 +23,7 @@ export default function Home() {
           <p className="hero-description">A security incident is unfolding. Evidence is scattered. Someone got inside. Your job is to investigate the attack, uncover what happened, and stop it before the damage spreads.</p>
           <div className="hero-actions">
             <a className="primary-button" href="#missions">EXPLORE THE MISSIONS <span>↘</span></a>
-            <span className="briefing-note">5 MISSIONS <b>·</b> 4 LEVELS <b>·</b> 1 INCIDENT</span>
+            <span className="briefing-note">5 MISSIONS <b>·</b> 3 DIFFICULTY PATHS <b>·</b> 1 INCIDENT</span>
           </div>
         </div>
         <div className="hero-visual" aria-label="Abstract network security visualization">
@@ -40,16 +40,16 @@ export default function Home() {
           {missions.map((mission) => {
             const card = (
               <>
-                <div className="mission-card-top"><span className="mission-number">{mission.number}</span><span className={`mission-status ${mission.active ? "status-active" : ""}`}>{mission.status}</span></div>
+                <div className="mission-card-top"><span className="mission-number">{mission.number}</span><span className={`mission-status ${mission.status === "PLAYABLE" ? "status-active" : ""}`}>{mission.status}</span></div>
                 <h3>{mission.name}</h3><p>{mission.topic}</p>
                 <div className="mission-card-bottom">
-                  {mission.active ? <span className="mission-launch">SELECT LEVEL &amp; START <span>↗</span></span> : <span>AWAITING CLEARANCE</span>}
-                  {!mission.active && <span className="mission-arrow">⌑</span>}
+                  {mission.href ? <span className="mission-launch">OPEN INVESTIGATION <span>↗</span></span> : <span>AWAITING CLEARANCE</span>}
+                  {!mission.href && <span className="mission-arrow">⌑</span>}
                 </div>
               </>
             );
-            return mission.active ? (
-              <Link href="/mission-1" className="mission-card mission-active mission-card-link" key={mission.number} aria-label="Start The Infiltration mission and select a level">{card}</Link>
+            return mission.href ? (
+              <Link href={mission.href} className="mission-card mission-active mission-card-link" key={mission.number} aria-label={`Open ${mission.name} mission`}>{card}</Link>
             ) : (
               <article className="mission-card" key={mission.number}>{card}</article>
             );
