@@ -53,7 +53,7 @@ const scenarios: Scenario[] = [
         {label:"WORKSTATION COPY",value:"Payroll_Update_RECOVERED.txt"},
         {label:"METHOD",value:"SHA-256 using the browser's Web Crypto API"},
         {label:"IMPORTANT",value:"A mismatch proves the bytes differ; it does not identify who changed them or why"}
-      ],question:"Compare the two files. Does the recovered workstation copy match the archive baseline?",context:"Use the download buttons and upload the files one at a time. The app calculates the digest from the actual file bytes.",explanation:"SHA-256 produces a fixed-length digest. Even a small content change should produce a different digest. A mismatch is evidence of a change, not proof of malicious intent.",hint:"Download the archive original and recovered copy. Hash both, then compare the complete SHA-256 values."},
+      ],question:"Compare the two files. Does the recovered workstation copy match the archive baseline?",context:"Use the download buttons and upload the files one at a time. The app calculates the digest from the actual file bytes.",explanation:"SHA-256 produces a fixed-length digest. Even a small content change should produce a different digest. A mismatch is evidence of a change, not proof of malicious intent.",hint:"The archive copy is the baseline. Upload the recovered workstation copy and confirm that its SHA-256 digest does not match."},
       {title:"The Photograph",subtitle:"Recover a hidden message",kind:"stego",briefing:"A photo named lobby_photo.png was stored beside the recovered attachment. It looks ordinary, but the incident team suspects it carries a concealed note. Download the evidence image and use the extraction tool to inspect its pixel data.",evidence:[
         {label:"FILE",value:"lobby_photo.png"},
         {label:"VISIBLE CONTENT",value:"A routine office-lobby image"},
@@ -83,7 +83,7 @@ const scenarios: Scenario[] = [
     description: "Correlate evidence from the phishing event, compare file integrity, extract concealed data, and decode a communication independently.",
     technical: "SHA-256 verification · metadata reasoning · LSB steganography · Caesar analysis",
     intro: "Mission 1 identified a payroll-themed lure and an executable launched from Downloads. Mission 2 established that RooBank's identity and trust infrastructure were also targeted. Now the forensic team has recovered multiple versions of the attachment and a photo from the compromised workstation. You must determine which artifacts changed and what the attacker may have concealed.",
-    cipherText: "WKH VHUYHU ORJ LV WKH QH[W FODY",
+    cipherText: "WKH VHUYHU ORJ LV WKH QH[W FOXH",
     cipherShift: 3,
     cipherAnswer: "THE SERVER LOG IS THE NEXT CLUE",
     hiddenMessage: "COMPARE TIMESTAMPS WITH DNS LOGS",
@@ -136,8 +136,8 @@ const scenarios: Scenario[] = [
     description: "Resolve conflicting forensic indicators, assess integrity, recover a covert message, and prioritize evidence collection under uncertainty.",
     technical: "Evidence provenance · SHA-256 · steganography · cryptanalysis · forensic reporting",
     intro: "The RooBank incident has expanded beyond a single phishing message. Mission 1 identified the initial payroll lure and endpoint execution. Mission 2 exposed a digital identity and certificate trust problem. The forensic team now has conflicting copies, a suspicious image, and an encrypted note. You must establish what is known, identify uncertainty, and direct the next collection effort.",
-    cipherText: "GSV WKH GVMWLMV RH MLG GSV VMW",
-    cipherShift: 19,
+    cipherText: "AOL KUF APTLSPUL PZ UVA AOL LUK",
+    cipherShift: 7,
     cipherAnswer: "THE DNS TIMELINE IS NOT THE END",
     hiddenMessage: "PRESERVE THE DNS AND AUTHENTICATION LOGS",
     minimum: 120,
@@ -193,9 +193,9 @@ function caesar(text: string, shift: number) {
   return text.replace(/[A-Z]/g, (char) => cipherAlphabet[(cipherAlphabet.indexOf(char) - shift + 26) % 26]);
 }
 
-function makeEvidencePng(canvas: HTMLCanvasElement, message: string) {
+function makeEvidencePng(canvas: HTMLCanvasElement, message: string): string {
   const ctx = canvas.getContext("2d");
-  if (!ctx) return;
+  if (!ctx) return "";
   const width = 360, height = 220;
   canvas.width = width; canvas.height = height;
   const data = ctx.createImageData(width, height);
@@ -210,9 +210,10 @@ function makeEvidencePng(canvas: HTMLCanvasElement, message: string) {
   const payload = new TextEncoder().encode(message + "\0");
   const bits: number[] = [];
   for (const byte of payload) for (let bit = 7; bit >= 0; bit--) bits.push((byte >> bit) & 1);
-  if (bits.length > width * height) return;
+  if (bits.length > width * height) return "";
   bits.forEach((bit, index) => { const pixel = Math.floor(index / 3); const channel = index % 3; const offset = pixel * 4 + channel; data.data[offset] = (data.data[offset] & 254) | bit; });
   ctx.putImageData(data, 0, 0);
+  return canvas.toDataURL("image/png");
 }
 
 async function extractImageMessage(file: File): Promise<string> {
@@ -263,6 +264,7 @@ export default function MissionThreeClient() {
   const [hashMatch, setHashMatch] = useState<boolean | null>(null);
   const [hashBusy, setHashBusy] = useState(false);
   const [stegoMessage, setStegoMessage] = useState("");
+  const [stegoUrl, setStegoUrl] = useState("");
   const [stegoError, setStegoError] = useState("");
   const [cipherGuess, setCipherGuess] = useState("");
   const [cipherShift, setCipherShift] = useState(3);
@@ -297,17 +299,17 @@ export default function MissionThreeClient() {
   }, [loaded, scenarioId, stage, answers, report, cipherGuess, hashName, hashDigest, hashMatch, stegoMessage, submitted, studentName, certificate]);
 
   useEffect(() => {
-    if (current?.kind === "stego" && imageCanvas.current && scenario) makeEvidencePng(imageCanvas.current, scenario.hiddenMessage);
+    if (current?.kind === "stego" && imageCanvas.current && scenario) setStegoUrl(makeEvidencePng(imageCanvas.current, scenario.hiddenMessage));
   }, [current?.kind, scenario]);
 
   const score = useMemo(() => scenario ? Object.entries(answers).filter(([key, value]) => scenario.stages[Number(key)]?.choices?.[value]?.correct).length : 0, [scenario, answers]);
-  const completed = scenario ? scenario.stages.filter((item, index) => item.kind === "hash" ? hashMatch !== null : item.kind === "stego" ? stegoMessage.length > 0 : item.kind === "cipher" ? cipherGuess.trim().length > 0 : answers[index] !== undefined).length : 0;
-  const allComplete = scenario ? scenario.stages.every((item, index) => item.kind === "hash" ? hashMatch !== null : item.kind === "stego" ? stegoMessage.length > 0 : item.kind === "cipher" ? cipherGuess.trim().length > 0 : answers[index] !== undefined) : false;
+  const completed = scenario ? scenario.stages.filter((item, index) => item.kind === "hash" ? hashMatch === false : item.kind === "stego" ? stegoMessage === scenario?.hiddenMessage : item.kind === "cipher" ? cipherGuess.trim() === scenario?.cipherAnswer : answers[index] !== undefined).length : 0;
+  const allComplete = scenario ? scenario.stages.every((item, index) => item.kind === "hash" ? hashMatch === false : item.kind === "stego" ? stegoMessage === scenario?.hiddenMessage : item.kind === "cipher" ? cipherGuess.trim() === scenario?.cipherAnswer : answers[index] !== undefined) : false;
 
   function start(id: Scenario["id"]) {
     setScenarioId(id); setStage(0); setAnswers({}); setReport(""); setHintOpen(false); setSubmitted(false); setRestored(false);
-    setStudentName(""); setCertificate(false); setHashName(""); setHashDigest(""); setHashMatch(null); setStegoMessage(""); setStegoError(""); setCipherGuess("");
-    setCipherShift(id === "commander" ? 19 : 3);
+    setStudentName(""); setCertificate(false); setHashName(""); setHashDigest(""); setHashMatch(null); setStegoMessage(""); setStegoUrl(""); setStegoError(""); setCipherGuess("");
+    setCipherShift(id === "commander" ? 7 : 3);
   }
   function reset() {
     if (confirm("Start this Mission 3 investigation over? Your saved answers and report on this browser will be erased.")) {
@@ -368,13 +370,13 @@ export default function MissionThreeClient() {
       <div className="progress-wrap"><div className="progress-label"><span>FORENSIC INVESTIGATION PROGRESS</span><strong>{completed} / 5 STAGES</strong></div><div className="progress-track"><div className="progress-fill" style={{width:(completed / 5 * 100) + "%"}}/></div></div>
       <section className="scenario-panel"><div className="panel-kicker">CASE BRIEF / {scenario.role}</div><h2>{scenario.title}</h2><p>{scenario.intro}</p><div className="scenario-meta"><span>{scenario.technical.toUpperCase()}</span><span>STAGE {stage + 1} OF 5</span><span>SIMULATED EVIDENCE</span></div></section>
       <div className="mission2-workspace">
-        <aside className="branch-sidebar"><div className="panel-kicker">INVESTIGATION STAGES</div><p className="sidebar-intro">Complete each stage to build your final determination. You can revisit completed stages.</p>{scenario.stages.map((item,index)=><button key={item.title} className={"branch-button " + (stage === index ? "branch-selected" : "") + ((item.kind === "hash" ? hashMatch !== null : item.kind === "stego" ? stegoMessage.length > 0 : item.kind === "cipher" ? cipherGuess.trim().length > 0 : answers[index] !== undefined) ? " branch-done" : "")} onClick={() => {setStage(index);setHintOpen(false);}}><span className="branch-icon">{String(index + 1).padStart(2,"0")}</span><span className="branch-button-copy"><strong>{item.title}</strong><small>{item.subtitle}</small></span><span className="branch-check">{(item.kind === "hash" ? hashMatch !== null : item.kind === "stego" ? stegoMessage.length > 0 : item.kind === "cipher" ? cipherGuess.trim().length > 0 : answers[index] !== undefined) ? "✓" : "↗"}</span></button>)}<div className="hint-box"><button className="hint-toggle" onClick={() => setHintOpen((v) => !v)}>{hintOpen ? "HIDE" : "SHOW"} INVESTIGATOR HINT</button>{hintOpen && <p>{current?.hint}</p>}</div></aside>
+        <aside className="branch-sidebar"><div className="panel-kicker">INVESTIGATION STAGES</div><p className="sidebar-intro">Complete each stage to build your final determination. You can revisit completed stages.</p>{scenario.stages.map((item,index)=><button key={item.title} className={"branch-button " + (stage === index ? "branch-selected" : "") + ((item.kind === "hash" ? hashMatch === false : item.kind === "stego" ? stegoMessage === scenario.hiddenMessage : item.kind === "cipher" ? cipherGuess.trim() === scenario.cipherAnswer : answers[index] !== undefined) ? " branch-done" : "")} onClick={() => {setStage(index);setHintOpen(false);}}><span className="branch-icon">{String(index + 1).padStart(2,"0")}</span><span className="branch-button-copy"><strong>{item.title}</strong><small>{item.subtitle}</small></span><span className="branch-check">{(item.kind === "hash" ? hashMatch === false : item.kind === "stego" ? stegoMessage === scenario.hiddenMessage : item.kind === "cipher" ? cipherGuess.trim() === scenario.cipherAnswer : answers[index] !== undefined) ? "✓" : "↗"}</span></button>)}<div className="hint-box"><button className="hint-toggle" onClick={() => setHintOpen((v) => !v)}>{hintOpen ? "HIDE" : "SHOW"} INVESTIGATOR HINT</button>{hintOpen && <p>{current?.hint}</p>}</div></aside>
         <section className="evidence-panel">
           <div className="evidence-heading"><div><div className="panel-kicker">EVIDENCE REVIEW / STAGE 0{stage + 1}</div><h2>{current?.title}</h2><p>{current?.subtitle}</p></div><span className="evidence-count">{current?.evidence.length} RECORDS</span></div>
           <div className="mission2-briefing">{current?.briefing}</div>
           <div className="mission2-evidence">{current?.evidence.map((item) => <div className="mission2-evidence-row" key={item.label}><span>{item.label}</span><strong>{item.value}</strong></div>)}</div>
           {current?.kind === "hash" && <div className="challenge-card"><div className="challenge-number">HANDS-ON LAB / SHA-256</div><h3>{current.question}</h3><p className="challenge-context">{current.context}</p><div className="hash-lab">
-            <div className="hash-downloads"><a className="secondary-button" href={URL.createObjectURL(new Blob([originalAttachment],{type:"text/plain"}))} download="Payroll_Update_ARCHIVE.txt">DOWNLOAD ARCHIVE COPY ↓</a><a className="secondary-button" href={URL.createObjectURL(new Blob([recoveredAttachment],{type:"text/plain"}))} download="Payroll_Update_RECOVERED.txt">DOWNLOAD RECOVERED COPY ↓</a></div>
+            <div className="hash-downloads"><a className="secondary-button" href={"data:text/plain;charset=utf-8," + encodeURIComponent(originalAttachment)} download="Payroll_Update_ARCHIVE.txt">DOWNLOAD ARCHIVE COPY ↓</a><a className="secondary-button" href={"data:text/plain;charset=utf-8," + encodeURIComponent(recoveredAttachment)} download="Payroll_Update_RECOVERED.txt">DOWNLOAD RECOVERED COPY ↓</a></div>
             <label htmlFor="m3-hash-upload">SELECT A FILE TO HASH</label><input id="m3-hash-upload" type="file" accept=".txt,.exe,.bin,*/*" onChange={(e) => hashFile(e.target.files?.[0])}/>
             {hashBusy && <p>Calculating SHA-256…</p>}
             {hashDigest && <div className="feedback-box"><strong>{hashName} — SHA-256</strong><p className="hash-value">{hashDigest}</p>{hashMatch !== null && <small>{hashMatch ? "MATCH: this file matches the archive baseline." : "MISMATCH: this file differs from the archive baseline."}</small>}</div>}
@@ -382,7 +384,7 @@ export default function MissionThreeClient() {
           </div></div>}
           {current?.kind === "stego" && <div className="challenge-card"><div className="challenge-number">HANDS-ON LAB / IMAGE STEGANOGRAPHY</div><h3>{current.question}</h3><p className="challenge-context">{current.context}</p><div className="stego-lab">
             <canvas ref={imageCanvas} className="stego-preview" aria-label="Generated fictional office image evidence"/>
-            <a className="secondary-button" href={imageCanvas.current?.toDataURL("image/png") || "#"} download="lobby_photo.png">DOWNLOAD EVIDENCE IMAGE ↓</a>
+            <a className="secondary-button" href={stegoUrl || "#"} download="lobby_photo.png">DOWNLOAD EVIDENCE IMAGE ↓</a>
             <label htmlFor="m3-stego-upload">UPLOAD THE PNG TO EXTRACT ITS HIDDEN MESSAGE</label><input id="m3-stego-upload" type="file" accept="image/png" onChange={(e) => extractFile(e.target.files?.[0])}/>
             {stegoError && <p className="feedback-review">{stegoError}</p>}
             {stegoMessage && <div className="feedback-box"><strong>RECOVERED PAYLOAD</strong><p>{stegoMessage}</p><small>{stegoMessage === scenario.hiddenMessage ? "Payload recovered successfully. Record it as a lead and corroborate it with other evidence." : "A payload was recovered, but it does not match the expected evidence note. Verify that you uploaded the supplied image."}</small></div>}
@@ -392,7 +394,7 @@ export default function MissionThreeClient() {
           {current?.kind === "hash" && hashMatch !== null && <div className="feedback-box"><strong>FORENSIC INTERPRETATION</strong><p>{hashMatch ? "This upload matches the archive baseline. Now hash the other copy and compare." : "This upload differs from the archive baseline. Hash the other copy to determine which artifact matches the preserved reference."}</p><small>{current.explanation}</small></div>}
           {current?.kind === "stego" && stegoMessage && <div className="feedback-box"><strong>ANALYST NOTE</strong><p>{stegoMessage === scenario.hiddenMessage ? "The embedded message was recovered. Treat it as an investigative lead, not proof of the full attack." : "The extracted text differs from the expected payload. Recheck the evidence image."}</p><small>{current.explanation}</small></div>}
           {current?.kind === "cipher" && cipherGuess.trim() === scenario.cipherAnswer && <div className="feedback-box"><strong>ANALYST NOTE</strong><p>{current.explanation}</p></div>}
-          <div className="mission2-stage-controls"><button className="secondary-button" disabled={stage === 0} onClick={() => {setStage((v) => Math.max(0,v - 1));setHintOpen(false);}}>← PREVIOUS STAGE</button><button className="primary-button" disabled={current?.kind === "decision" ? answers[stage] === undefined : current?.kind === "hash" ? hashMatch === null : current?.kind === "stego" ? !stegoMessage : !cipherGuess.trim()} onClick={() => {setStage((v) => Math.min(4,v + 1));setHintOpen(false);}}>{stage < 4 ? "NEXT STAGE ↗" : "REVIEW INVESTIGATION ↗"}</button></div>
+          <div className="mission2-stage-controls"><button className="secondary-button" disabled={stage === 0} onClick={() => {setStage((v) => Math.max(0,v - 1));setHintOpen(false);}}>← PREVIOUS STAGE</button><button className="primary-button" disabled={current?.kind === "decision" ? answers[stage] === undefined : current?.kind === "hash" ? hashMatch !== false : current?.kind === "stego" ? stegoMessage !== scenario.hiddenMessage : cipherGuess.trim() !== scenario.cipherAnswer} onClick={() => {setStage((v) => Math.min(4,v + 1));setHintOpen(false);}}>{stage < 4 ? "NEXT STAGE ↗" : "REVIEW INVESTIGATION ↗"}</button></div>
         </section>
       </div>
       {allComplete ? <section className="report-panel"><div className="panel-kicker">FINAL TASK / FORENSIC ASSESSMENT</div><h2>WHAT DOES THE EVIDENCE ESTABLISH?</h2><p>{scenario.reportPrompt}</p><textarea value={report} onChange={(e) => setReport(e.target.value)} rows={7} placeholder="Forensic assessment: The archive and endpoint hashes... The image contained... The decoded note... The evidence does / does not establish... My next evidence request is..."/><button className="primary-button" disabled={report.trim().length < scenario.minimum} onClick={submitReport}>SUBMIT FORENSIC ASSESSMENT ↗</button><small>At least {scenario.minimum} characters required. Reference specific artifacts and distinguish facts from hypotheses.</small></section> : <div className="locked-report"><span>▣</span><div><strong>FINAL ASSESSMENT LOCKED</strong><small>Complete all five investigation stages to unlock your report.</small></div></div>}
