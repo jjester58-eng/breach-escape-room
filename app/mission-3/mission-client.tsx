@@ -329,7 +329,7 @@ export default function MissionThreeClient() {
   const completed = scenario ? scenario.stages.filter((item, index) => item.kind === "hash" ? hashMatch === false : item.kind === "stego" ? stegoMessage === scenario?.hiddenMessage : item.kind === "cipher" ? cipherGuess.trim() === scenario?.cipherAnswer : answers[index] !== undefined).length : 0;
   const allComplete = scenario ? scenario.stages.every((item, index) => item.kind === "hash" ? hashMatch === false : item.kind === "stego" ? stegoMessage === scenario?.hiddenMessage : item.kind === "cipher" ? cipherGuess.trim() === scenario?.cipherAnswer : answers[index] !== undefined) : false;
   const heatNodes: HeatNode[] = MISSION_RUNTIME_CONFIG["mission-3"].targets.map((target,index) => {
-    const proximity = index === 0 ? (hashMatch === false ? 88 : hashMatch === true ? 28 : 10) : index === 1 ? (stegoMessage === scenario?.hiddenMessage ? 92 : stegoMessage ? 18 : 10) : index === 2 ? (cipherGuess.trim() === scenario?.cipherAnswer ? 92 : cipherGuess.trim() ? 18 : 10) : (scenario?.stages[0]?.choices[answers[0]]?.correct ? 82 : answers[0] !== undefined ? 12 : 10);
+    const proximity = index === 0 ? (hashMatch === false ? 88 : hashMatch === true ? 28 : 10) : index === 1 ? (stegoMessage === scenario?.hiddenMessage ? 92 : stegoMessage ? 18 : 10) : index === 2 ? (cipherGuess.trim() === scenario?.cipherAnswer ? 92 : cipherGuess.trim() ? 18 : 10) : (scenario?.stages[0]?.choices?.[answers[0]]?.correct ? 82 : answers[0] !== undefined ? 12 : 10);
     return { ...target, proximity };
   });
 
