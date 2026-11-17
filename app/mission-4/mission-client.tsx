@@ -193,8 +193,9 @@ export default function MissionFourClient() {
     const answer = current.options[index];
     setAnswers((previous) => ({ ...previous, [stage]: index }));
     setNodes((previous) => previous.map((node) => node.id === current.targetId
-      ? { ...node, proximity: Math.max(0, Math.min(100, node.proximity + (answer.correct ? 38 : -8))) }
+      ? { ...node, proximity: Math.max(0, Math.min(100, node.proximity + (answer.correct ? 55 : -18))) }
       : node));
+    setSelectedNode(current.targetId);
     setHintOpen(false);
   }
 
