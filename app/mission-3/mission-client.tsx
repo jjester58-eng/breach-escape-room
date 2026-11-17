@@ -136,8 +136,8 @@ const scenarios: Scenario[] = [
   {
     id: "commander", role: "INCIDENT COMMANDER", title: "The Evidence Trail", time: "55–75 MIN",
     description: "Compare clues that do not seem to match, check whether files have changed, find the hidden message, and decide what evidence the team should collect next.",
-    technical: "Evidence provenance · SHA-256 · steganography · cryptanalysis · forensic reporting",
-    intro: "The RooBank incident has expanded beyond a single phishing message. Mission 1 identified the initial payroll lure and endpoint execution. Mission 2 exposed a digital identity and certificate trust problem. The forensic team now has conflicting copies, a suspicious image, and an encrypted note. You must establish what is known, identify uncertainty, and direct the next collection effort.",
+    technical: "Where files came from · SHA-256 file hashes · hidden messages · code breaking · evidence reports",
+    intro: "The RooBank incident is bigger than one fake email. In Mission 1, you found the payroll message and suspicious file. In Mission 2, you found a problem with website identity and certificates. Now the team has different copies of a file, a suspicious picture, and a coded note. Figure out what the evidence shows and what the team should check next.",
     cipherText: "AOL KUZ APTLSPUL PZ UVA AOL LUK",
     cipherShift: 7,
     cipherAnswer: "THE DNS TIMELINE IS NOT THE END",
@@ -154,7 +154,7 @@ const scenarios: Scenario[] = [
         {label:"Treat all three files as identical because their names are similar",correct:false,feedback:"Similar names do not establish identical contents or provenance."},
         {label:"Preserve each item separately, document source and handling, and compare hashes before interpretation",correct:true,feedback:"Correct. Maintain separate evidence records and establish integrity before combining conclusions."},
         {label:"Discard the user submission because its chain of custody is incomplete",correct:false,feedback:"An incomplete chain reduces confidence, but the item may still be useful as a lead. Preserve and label its limitations."}
-      ],explanation:"Chain of custody records who handled evidence, when, and how. Weak provenance does not automatically make an item useless, but conclusions must account for that weakness.",hint:"Do not merge evidence records. Preserve each source and document what is known and unknown about its handling."},
+      ],explanation:"Chain of custody is a record of who handled the evidence and when. If that record is missing, the evidence may still help, but you must be careful about what you claim it proves.",hint:"Do not merge evidence records. Preserve each source and document what is known and unknown about its handling."},
       {title:"The Fingerprint Test",subtitle:"Verify three evidence copies",kind:"hash",briefing:"The archive baseline and recovered endpoint copy are available as downloadable artifacts. A third user-submitted copy is intentionally not trusted until its provenance is documented. Calculate SHA-256 for the first two and compare them.",evidence:[
         {label:"BASELINE",value:"Gateway archive copy captured at receipt"},
         {label:"RECOVERED",value:"Endpoint forensic image copy"},
@@ -171,7 +171,7 @@ const scenarios: Scenario[] = [
         {label:"RISK",value:"Visible appearance may not reveal embedded content"},
         {label:"REQUIREMENT",value:"Preserve the original and record the extraction method"}
       ],question:"Which collection priority is indicated by the hidden message?",context:"Download and upload the evidence image to recover the embedded text. Do not treat a hidden instruction as proof by itself.",explanation:"Steganography can conceal communication inside ordinary-looking media. The extracted text is a lead that must be corroborated with system logs.",hint:"Extract the payload and read the instruction. Then identify which logs could independently verify it."},
-      {title:"Cryptanalysis",subtitle:"Decode the final note",kind:"cipher",briefing:"A second encrypted note was recovered from a temporary folder. The team knows it uses a Caesar-style shift but has not confirmed the key. Recover the plaintext and explain the limits of this cipher.",evidence:[
+      {title:"Code Breaking",subtitle:"Decode the final note",kind:"cipher",briefing:"A second encrypted note was recovered from a temporary folder. The team knows it uses a Caesar-style shift but has not confirmed the key. Recover the plaintext and explain the limits of this cipher.",evidence:[
         {label:"CIPHERTEXT",value:"GSV WKH GVMWLMV RH MLG GSV VMW"},
         {label:"KNOWN FAMILY",value:"Caesar / rotation substitution"},
         {label:"KEY STATUS",value:"Not provided"},
