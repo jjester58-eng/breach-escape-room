@@ -124,7 +124,11 @@ export default function MissionOneClient() {
   useEffect(() => {
     if (!progressLoaded) return;
     try {
-      if (!progressLoaded) {\n    return <main className="game-shell"><div className="eyebrow">LOADING SAVED INVESTIGATION…</div></main>;\n  }\n\n  if (level === null) {
+      if (!progressLoaded) {
+    return <main className="game-shell"><div className="eyebrow">LOADING SAVED INVESTIGATION…</div></main>;
+  }
+
+  if (level === null) {
         window.localStorage.removeItem("breach:mission-1:v1");
         return;
       }
