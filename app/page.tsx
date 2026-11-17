@@ -37,16 +37,23 @@ export default function Home() {
       <section className="mission-section" id="missions">
         <div className="section-heading"><div><div className="eyebrow">YOUR ASSIGNMENT <span className="eyebrow-divider">/</span> CASE FILE 0417</div><h2>THE INVESTIGATION<span className="accent">.</span></h2></div><p>Each mission unlocks another piece of the incident. Follow the evidence. Think like an analyst.</p></div>
         <div className="mission-grid">
-          {missions.map((mission) => (
-            <article className={`mission-card \${mission.active ? "mission-active" : ""}`} key={mission.number}>
-              <div className="mission-card-top"><span className="mission-number">{mission.number}</span><span className={`mission-status \${mission.active ? "status-active" : ""}`}>{mission.status}</span></div>
-              <h3>{mission.name}</h3><p>{mission.topic}</p>
-              <div className="mission-card-bottom">
-                {mission.active ? <Link href="/mission-1" className="mission-launch">SELECT LEVEL &amp; START <span>↗</span></Link> : <span>AWAITING CLEARANCE</span>}
-                {!mission.active && <span className="mission-arrow">⌑</span>}
-              </div>
-            </article>
-          ))}
+          {missions.map((mission) => {
+            const card = (
+              <>
+                <div className="mission-card-top"><span className="mission-number">{mission.number}</span><span className={`mission-status ${mission.active ? "status-active" : ""}`}>{mission.status}</span></div>
+                <h3>{mission.name}</h3><p>{mission.topic}</p>
+                <div className="mission-card-bottom">
+                  {mission.active ? <span className="mission-launch">SELECT LEVEL &amp; START <span>↗</span></span> : <span>AWAITING CLEARANCE</span>}
+                  {!mission.active && <span className="mission-arrow">⌑</span>}
+                </div>
+              </>
+            );
+            return mission.active ? (
+              <Link href="/mission-1" className="mission-card mission-active mission-card-link" key={mission.number} aria-label="Start The Infiltration mission and select a level">{card}</Link>
+            ) : (
+              <article className="mission-card" key={mission.number}>{card}</article>
+            );
+          })}
         </div>
       </section>
       <footer className="footer"><span>BREACH<span className="accent">.</span> <span className="footer-muted">CYBERSECURITY ESCAPE ROOM</span></span><span>FICTIONAL TRAINING ENVIRONMENT <b>·</b> NO LIVE SYSTEMS</span></footer>
