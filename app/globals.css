@@ -440,3 +440,37 @@ h2 { margin: 12px 0 0; font-family: 'Barlow Condensed', sans-serif; font-size: 4
   .certificate-details strong { font-size: 16px; }
   .certificate-footer { font-size: 7px; line-height: 1.6; }
 }
+
+
+/* Mission 1 automatic progress saving */
+.autosave-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 12px 0;
+  padding: 10px 13px;
+  border: 1px solid rgba(84,230,181,.28);
+  background: rgba(84,230,181,.055);
+  color: #8fe8c8;
+  font: 9px 'DM Mono', monospace;
+  letter-spacing: .8px;
+}
+.autosave-strip button {
+  border: 0;
+  background: transparent;
+  color: #aebbc2;
+  cursor: pointer;
+  font: inherit;
+  letter-spacing: .5px;
+}
+.autosave-strip button:hover { color: #ffffff; }
+.restore-notice {
+  margin: 12px 0;
+  padding: 12px 14px;
+  border-left: 2px solid var(--cyan, #54e6b5);
+  background: rgba(84,230,181,.07);
+  color: #c5d8d5;
+  font: 11px 'DM Sans', sans-serif;
+  line-height: 1.6;
+}
