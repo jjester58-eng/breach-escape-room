@@ -155,6 +155,7 @@ export default function MissionOneClient() {
   }
 
   function startLevel(id: number) {
+    setRestoredProgress(false);
     setLevel(id); setAnswers({}); setReport(""); setSubmitted(false); setDeepDive(false); setShowHint(false); setActiveBranch("phishing"); setStudentName(""); setCertificateReady(false);
   }
 
