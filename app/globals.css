@@ -474,3 +474,29 @@ h2 { margin: 12px 0 0; font-family: 'Barlow Condensed', sans-serif; font-size: 4
   font: 11px 'DM Sans', sans-serif;
   line-height: 1.6;
 }
+
+
+/* Mission 2: The Impostor */
+.mission2-scenario-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+.mission2-scenario-card { display:flex; flex-direction:column; min-height:300px; padding:20px; text-align:left; color:var(--text); border:1px solid var(--line); background:linear-gradient(145deg,#121b24,#0d131a); cursor:pointer; transition:border .2s,transform .2s,background .2s; }
+.mission2-scenario-card:hover { border-color:var(--cyan); background:#14212a; transform:translateY(-3px); }
+.mission2-scenario-card h3 { margin:23px 0 9px; font:700 30px/1 'Barlow Condensed',sans-serif; }
+.mission2-scenario-card>p { min-height:76px; margin:0 0 16px; color:#9aa8b1; font-size:11px; line-height:1.7; }
+.m2-rookie,.m2-analyst,.m2-commander { font:8px 'DM Mono',monospace; letter-spacing:.5px; }
+.m2-rookie { color:#70d9ad; }.m2-analyst { color:#f2bd62; }.m2-commander { color:#ff8b78; }
+.m2-technical { display:flex; flex-direction:column; gap:6px; margin-top:auto; padding:12px 0; border-top:1px solid var(--line); color:#9baab3; font-size:10px; line-height:1.6; }
+.m2-technical strong { color:var(--cyan); font:8px 'DM Mono',monospace; letter-spacing:.8px; }
+.mission2-workspace { display:grid; grid-template-columns:290px minmax(0,1fr); gap:16px; align-items:start; }
+.mission2-briefing { margin:15px 0; padding:13px 15px; border-left:2px solid var(--cyan); background:#10201f; color:#b8c9c6; font-size:11px; line-height:1.75; }
+.mission2-evidence { display:grid; gap:7px; margin:15px 0 20px; }
+.mission2-evidence-row { display:grid; grid-template-columns:150px minmax(0,1fr); gap:12px; padding:11px 12px; border:1px solid #293740; background:#0b1319; }
+.mission2-evidence-row>span { color:#7f929d; font:8px 'DM Mono',monospace; letter-spacing:.6px; }
+.mission2-evidence-row>strong { color:#d0d9de; font:500 10px/1.6 'DM Mono',monospace; overflow-wrap:anywhere; }
+.mission2-stage-controls { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-top:20px; padding-top:16px; border-top:1px solid var(--line); }
+.mission2-stage-controls .primary-button { border:0; cursor:pointer; }
+.mission2-stage-controls .primary-button:disabled { opacity:.35; cursor:not-allowed; }
+.mission2-stage-controls .secondary-button:disabled { opacity:.3; cursor:not-allowed; }
+.mission2-last-note { color:#7f929d; font:9px 'DM Mono',monospace; letter-spacing:.5px; }
+@media(max-width:900px) { .mission2-scenario-grid { grid-template-columns:1fr; } .mission2-scenario-card { min-height:0; } .mission2-scenario-card>p { min-height:0; } .mission2-workspace { grid-template-columns:1fr; } }
+@media(max-width:600px) { .mission2-evidence-row { grid-template-columns:1fr; gap:6px; } .mission2-stage-controls { align-items:stretch; flex-direction:column; } .mission2-stage-controls>* { width:100%; justify-content:center; } }
+@media print { .mission2-scenario-grid,.mission2-workspace,.mission2-stage-controls { display:none!important; } }
