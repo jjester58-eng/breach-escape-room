@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
-type SavedProgress = { version: 1; level: number; activeBranch: string; answers: Record<string, number>; report: string; submitted: boolean; showHint: boolean; deepDive: boolean; studentName: string; certificateReady: boolean; savedAt: string };\n\ntype Choice = { label: string; correct: boolean; feedback: string };
+type SavedProgress = { version: 1; level: number; activeBranch: string; answers: Record<string, number>; report: string; submitted: boolean; showHint: boolean; deepDive: boolean; studentName: string; certificateReady: boolean; savedAt: string };
+
+type Choice = { label: string; correct: boolean; feedback: string };
 type Challenge = { prompt: string; context: string; choices: Choice[]; explain: string };
 type Branch = { id: string; title: string; subtitle: string; icon: string; evidence: string[]; challenges: Challenge[] };
 
@@ -91,6 +93,51 @@ export default function MissionOneClient() {
   const [deepDive, setDeepDive] = useState(false);
   const [studentName, setStudentName] = useState("");
   const [certificateReady, setCertificateReady] = useState(false);
+  const [progressLoaded, setProgressLoaded] = useState(false);
+  const [restoredProgress, setRestoredProgress] = useState(false);
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem("breach:mission-1:v1");
+      if (raw) {
+        const saved = JSON.parse(raw) as Partial<SavedProgress>;
+        if (saved.version === 1 && typeof saved.level === "number" && levels.some((item) => item.id === saved.level)) {
+          setLevel(saved.level);
+          setActiveBranch(saved.activeBranch && branches.some((item) => item.id === saved.activeBranch) ? saved.activeBranch : "phishing");
+          setAnswers(saved.answers && typeof saved.answers === "object" ? saved.answers : {});
+          setReport(typeof saved.report === "string" ? saved.report : "");
+          setSubmitted(saved.submitted === true);
+          setShowHint(saved.showHint === true);
+          setDeepDive(saved.deepDive === true);
+          setStudentName(typeof saved.studentName === "string" ? saved.studentName : "");
+          setCertificateReady(saved.certificateReady === true);
+          setRestoredProgress(true);
+        }
+      }
+    } catch {
+      // Ignore damaged or unavailable browser storage; the investigation can still be played.
+    } finally {
+      setProgressLoaded(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!progressLoaded) return;
+    try {
+      if (!progressLoaded) {\n    return <main className="game-shell"><div className="eyebrow">LOADING SAVED INVESTIGATION…</div></main>;\n  }\n\n  if (level === null) {
+        window.localStorage.removeItem("breach:mission-1:v1");
+        return;
+      }
+      const saved: SavedProgress = {
+        version: 1, level, activeBranch, answers, report, submitted, showHint,
+        deepDive, studentName, certificateReady, savedAt: new Date().toISOString()
+      };
+      window.localStorage.setItem("breach:mission-1:v1", JSON.stringify(saved));
+    } catch {
+      // Storage may be disabled or full. Do not interrupt the student's work.
+    }
+  }, [progressLoaded, level, activeBranch, answers, report, submitted, showHint, deepDive, studentName, certificateReady]);
+
 
   const selectedLevel = levels.find((item) => item.id === level);
   const requiredBranches = selectedLevel?.branches ?? 0;
@@ -179,6 +226,8 @@ export default function MissionOneClient() {
     <main className="game-shell">
       <nav className="game-nav"><Link className="brand" href="/"><span className="brand-mark">B</span><span>BREACH<span className="brand-period">.</span></span></Link><div className="mission-nav-label">MISSION 01 <span>/</span> THE INFILTRATION</div><span className="topbar-status"><i /> LEVEL {level} ACTIVE</span></nav>
       <div className="play-header"><div><Link href="/mission-1" className="back-link">← CHANGE LEVEL</Link><div className="eyebrow">OPERATION PAYROLL / CASE 0417-A</div><h1 className="play-title">INVESTIGATION <em>DESK</em></h1></div><div className="play-meta"><strong>{selectedLevel?.time}</strong><span>ESTIMATED COMPLETION</span></div></div>
+      <div className="autosave-strip"><span>✓ AUTO-SAVE ON THIS DEVICE</span><button onClick={() => { if (window.confirm("Start this investigation over? Your saved answers and report on this browser will be erased.")) { window.localStorage.removeItem("breach:mission-1:v1"); startLevel(level); } }}>START OVER ↻</button></div>
+      {restoredProgress && <div className="restore-notice">SAVED INVESTIGATION RESTORED — You can continue where you left off. Your work is saved automatically on this browser.</div>}
       <div className="autosave-strip"><span>✓ AUTO-SAVE ON THIS DEVICE</span><button onClick={() => { if (window.confirm("Start this investigation over? Your saved answers and report on this browser will be erased.")) { window.localStorage.removeItem("breach:mission-1:v1"); startLevel(level); } }}>START OVER ↻</button></div>
       {restoredProgress && <div className="restore-notice">SAVED INVESTIGATION RESTORED — You can continue where you left off. Your work is saved automatically on this browser.</div>}
       <div className="progress-wrap"><div className="progress-label"><span>INVESTIGATION PROGRESS</span><strong>{Math.min(completedBranches, requiredBranches)} / {requiredBranches} REQUIRED BRANCHES</strong></div><div className="progress-track"><div className="progress-fill" style={{ width: progress + "%" }} /></div></div>
