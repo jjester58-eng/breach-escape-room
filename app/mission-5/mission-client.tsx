@@ -163,6 +163,8 @@ export default function MissionFiveClient() {
   const timeBonus = difficulty&&!expired?Math.min(10,Math.floor((remaining/DIFFICULTY_TIMES[difficulty])*10)):0;
   const canSubmit = completed===stages.length&&report.trim().length>=100;
   const current = stages[stage];
+  const containmentFailed = answers[1] !== undefined && !stages[1].options[answers[1]].correct;
+  const eradicationFailed = answers[2] !== undefined && !stages[2].options[answers[2]].correct;
   const finalScore = Math.min(100,decisionPoints+(submitted?15+timeBonus:0));
   const outcome = correctCount>=4&&impact>=6&&evidenceQuality>=6?"SUCCESSFUL RECOVERY":correctCount>=3&&impact>=1?"PARTIAL RECOVERY":impact<0?"CONTAINMENT FAILURE":"INCOMPLETE INVESTIGATION";
 
@@ -250,6 +252,9 @@ export default function MissionFiveClient() {
         <section className="evidence-panel">
           <div className="evidence-heading"><div><div className="panel-kicker">STAGE 0{stage+1} / RESPONSE PLAN</div><h2>{current.title}</h2><p>{current.subtitle}</p></div><span className="evidence-count">{evidence.length} RECORDS</span></div>
           <div className="mission2-briefing">{current.briefing}</div>
+          {stage>=2&&containmentFailed&&<div className="ir-consequence ir-consequence-danger"><strong>FOLLOW-ON ALERT</strong><span>Containment was not effective. The attacker may still have access. Confirm that accounts and connected systems are safe before moving forward.</span></div>}
+          {stage>=3&&eradicationFailed&&<div className="ir-consequence ir-consequence-danger"><strong>RECOVERY HOLD</strong><span>The cleanup step did not remove all known risks. Do not reconnect a system until access, persistence, and exposed credentials have been checked.</span></div>}
+          {stage>=3&&evidenceQuality<0&&<div className="ir-consequence"><strong>EVIDENCE GAP</strong><span>Some response choices may have affected evidence. Record what is missing and avoid claiming facts that cannot be verified.</span></div>}
           {difficulty==="rookie"&&<div className="ir-learning-note"><strong>QUICK LEARN</strong><span>{currentContext}</span></div>}
           <div className="mission2-evidence">{evidence.map((item,index)=><div className="mission2-evidence-row" key={item.label+"-"+index}><span>{item.label}</span><strong>{item.value}</strong></div>)}</div>
           {difficulty!=="rookie"&&<p className="challenge-context">{currentContext}</p>}
