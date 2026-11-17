@@ -104,3 +104,130 @@ h2 { margin: 12px 0 0; font-family: 'Barlow Condensed', sans-serif; font-size: 4
   .mission-grid { grid-template-columns: 1fr; }
   .hero-actions { align-items: flex-start; flex-direction: column; }
 }
+
+
+/* Mission 1 playable investigation */
+.game-shell { max-width: 1240px; min-height: 100vh; margin: 0 auto; padding: 0 5.5%; }
+.game-nav { height: 76px; display:flex; align-items:center; justify-content:space-between; gap:16px; border-bottom:1px solid var(--line); }
+.game-heading { padding:48px 0 25px; }
+.back-link { display:inline-block; color:#82919b; font:10px 'DM Mono',monospace; letter-spacing:1px; margin-bottom:22px; }
+.back-link:hover { color:var(--cyan); }
+.game-title { margin:16px 0; font:800 clamp(54px,8vw,88px)/.9 'Barlow Condensed',sans-serif; letter-spacing:.5px; }
+.game-title em { color:var(--accent); font-style:normal; }
+.game-lead { max-width:680px; color:#a5b1b9; font-size:14px; line-height:1.8; }
+.scenario-panel,.email-panel,.evidence-panel,.report-panel,.deep-dive-panel,.completion-panel { border:1px solid var(--line); background:linear-gradient(145deg,#121b24,#0d131a); }
+.scenario-panel { padding:24px 27px; margin:10px 0 40px; }
+.panel-kicker { color:var(--cyan); font:10px 'DM Mono',monospace; letter-spacing:1.5px; }
+.scenario-panel h2,.report-panel h2 { margin:10px 0; font:700 30px 'Barlow Condensed',sans-serif; }
+.scenario-panel p,.report-panel p,.deep-dive-panel p { max-width:800px; color:#a5b1b9; font-size:13px; line-height:1.8; }
+.scenario-meta { display:flex; flex-wrap:wrap; gap:10px 24px; padding-top:14px; border-top:1px solid var(--line); color:#71828d; font:9px 'DM Mono',monospace; letter-spacing:.7px; }
+.level-heading { display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin-bottom:18px; }
+.level-heading h2 { margin:8px 0 0; font:700 42px 'Barlow Condensed',sans-serif; }
+.level-heading>p { max-width:390px; margin:0; color:var(--muted); font-size:12px; line-height:1.7; }
+.level-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.level-card { text-align:left; cursor:pointer; min-height:210px; padding:20px; color:var(--text); border:1px solid var(--line); background:var(--panel); transition:border .2s,transform .2s,background .2s; }
+.level-card:hover { border-color:var(--accent); transform:translateY(-3px); background:#171f28; }
+.level-top,.level-footer { display:flex; align-items:center; justify-content:space-between; gap:10px; color:var(--cyan); font:10px 'DM Mono',monospace; letter-spacing:1px; }
+.level-time { color:#ff947f; }
+.level-card h3 { margin:18px 0 8px; font:700 28px 'Barlow Condensed',sans-serif; }
+.level-card p { min-height:42px; margin:0 0 17px; color:#9aa8b1; font-size:12px; line-height:1.65; }
+.level-footer { padding-top:13px; border-top:1px solid var(--line); color:#71828d; font-size:8px; letter-spacing:.4px; }
+.level-footer b { color:var(--accent); font-size:16px; }
+.game-footnote { margin:18px 0 40px; color:#71828d; font-size:10px; line-height:1.7; }
+.mission-nav-label { color:#8796a0; font:10px 'DM Mono',monospace; letter-spacing:1px; }
+.mission-nav-label span { color:var(--accent); padding:0 7px; }
+.play-header { display:flex; align-items:flex-end; justify-content:space-between; gap:20px; padding:30px 0 18px; }
+.play-header .back-link { margin-bottom:16px; }
+.play-title { margin:8px 0 0; font:800 clamp(38px,5vw,57px)/.95 'Barlow Condensed',sans-serif; }
+.play-title em { color:var(--accent); font-style:normal; }
+.play-meta { display:flex; flex-direction:column; align-items:flex-end; gap:5px; }
+.play-meta strong { color:var(--cyan); font:20px 'Barlow Condensed',sans-serif; }
+.play-meta span { color:#758590; font:8px 'DM Mono',monospace; letter-spacing:1px; }
+.progress-wrap { margin:5px 0 22px; }
+.progress-label { display:flex; justify-content:space-between; gap:12px; color:#71828d; font:9px 'DM Mono',monospace; letter-spacing:.8px; margin-bottom:8px; }
+.progress-label strong { color:var(--cyan); font-weight:400; }
+.progress-track { height:5px; background:#1d2932; }
+.progress-fill { height:100%; background:var(--accent); transition:width .3s; }
+.email-panel { margin-bottom:22px; }
+.email-toolbar { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 17px; border-bottom:1px solid var(--line); color:#81919b; font:9px 'DM Mono',monospace; letter-spacing:1px; }
+.alert-pill { color:#ff907b; border:1px solid #75443b; padding:5px 8px; }
+.email-body { padding:18px; }
+.email-line { display:grid; grid-template-columns:75px 1fr; gap:10px; margin-bottom:10px; font-size:12px; }
+.email-line span { color:#71828d; font:9px 'DM Mono',monospace; padding-top:2px; }
+.email-line strong { font-weight:500; overflow-wrap:anywhere; }
+.email-body>p { max-width:720px; margin:18px 0; color:#aab6bd; font-size:12px; line-height:1.8; }
+.email-attachment,.email-link { display:inline-block; margin:0 10px 5px 0; padding:9px 11px; border:1px solid #33414b; color:#c7d1d6; font:10px 'DM Mono',monospace; }
+.email-attachment small { color:#ff967f; font-size:8px; }
+.email-link { color:#ff967f; border-color:#70443c; }
+.investigation-layout { display:grid; grid-template-columns:280px minmax(0,1fr); gap:16px; align-items:start; }
+.branch-sidebar { padding:18px 14px; border:1px solid var(--line); background:#0d141b; }
+.sidebar-intro { margin:9px 0 14px; color:#84939d; font-size:11px; line-height:1.6; }
+.branch-button { width:100%; display:flex; align-items:center; gap:10px; text-align:left; padding:12px 9px; margin:5px 0; border:1px solid transparent; background:transparent; color:var(--text); cursor:pointer; }
+.branch-button:hover,.branch-selected { border-color:#34434d; background:#16212a; }
+.branch-done .branch-check { color:var(--cyan); }
+.branch-icon { display:grid; place-items:center; flex:0 0 30px; width:30px; height:30px; border:1px solid #35434c; color:var(--accent); font-size:16px; }
+.branch-button-copy { display:flex; flex-direction:column; gap:4px; min-width:0; }
+.branch-button-copy strong { font:600 15px 'Barlow Condensed',sans-serif; }
+.branch-button-copy small { color:#778792; font-size:9px; line-height:1.4; }
+.branch-check { margin-left:auto; color:#72818b; }
+.hint-box { margin-top:16px; padding:12px; border:1px solid #33414a; background:#111b23; }
+.hint-toggle { padding:0; border:0; background:none; color:var(--cyan); cursor:pointer; font:9px 'DM Mono',monospace; letter-spacing:.7px; }
+.hint-box p { margin:10px 0 0; color:#9aa8b1; font-size:10px; line-height:1.7; }
+.evidence-panel { padding:20px; }
+.evidence-heading { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+.evidence-heading h2 { margin:7px 0 3px; font:700 29px 'Barlow Condensed',sans-serif; }
+.evidence-heading p { margin:0; color:#85949d; font-size:11px; }
+.evidence-count { color:#71828d; font:8px 'DM Mono',monospace; white-space:nowrap; }
+.evidence-list { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin:17px 0 22px; }
+.evidence-item { display:flex; gap:9px; padding:10px; border:1px solid #27343d; background:#0c1319; color:#aeb9c0; font-size:10px; line-height:1.5; overflow-wrap:anywhere; }
+.evidence-item span { color:var(--cyan); font:9px 'DM Mono',monospace; }
+.challenge-card { padding:17px 0; border-top:1px solid var(--line); }
+.challenge-number { color:var(--cyan); font:9px 'DM Mono',monospace; letter-spacing:1px; }
+.challenge-card h3 { margin:9px 0 7px; font:600 21px/1.2 'Barlow Condensed',sans-serif; }
+.challenge-context { margin:0 0 13px; color:#8998a1; font-size:10px; line-height:1.6; }
+.choice-list { display:grid; gap:7px; }
+.choice-button { display:flex; align-items:center; gap:10px; width:100%; padding:11px; text-align:left; border:1px solid #2b3942; background:#101922; color:#c2cdd2; cursor:pointer; font:11px/1.5 'DM Sans',sans-serif; }
+.choice-button:hover:not(:disabled) { border-color:#71828d; background:#17232c; }
+.choice-button:disabled { cursor:default; opacity:.75; }
+.choice-letter { display:grid; place-items:center; flex:0 0 23px; height:23px; border:1px solid #43515b; color:#9eabb3; font:10px 'DM Mono',monospace; }
+.choice-button b { margin-left:auto; }
+.choice-correct,.choice-reveal { border-color:#287b68; background:#10251f; }
+.choice-correct .choice-letter,.choice-reveal .choice-letter { color:#6fe0bf; border-color:#287b68; }
+.choice-wrong { border-color:#87473e; background:#2a1717; }
+.choice-wrong .choice-letter { color:#ff9b89; border-color:#87473e; }
+.feedback-box { margin-top:10px; padding:12px; border-left:2px solid var(--cyan); background:#10211f; }
+.feedback-review { border-left-color:var(--accent); background:#241817; }
+.feedback-box strong { color:var(--cyan); font:9px 'DM Mono',monospace; letter-spacing:.7px; }
+.feedback-review strong { color:#ff9b89; }
+.feedback-box p { margin:7px 0; color:#c1ccc9; font-size:10px; line-height:1.6; }
+.feedback-box small { color:#899b9b; font-size:9px; line-height:1.6; display:block; }
+.branch-complete { display:flex; flex-direction:column; gap:5px; margin-top:15px; padding:13px; border:1px solid #286653; background:#10221e; }
+.branch-complete strong { color:#6fe0bf; font:9px 'DM Mono',monospace; }
+.branch-complete span { color:#9fb9b1; font-size:10px; line-height:1.6; }
+.deep-dive-panel,.report-panel { margin-top:18px; padding:20px; }
+.deep-dive-panel h3 { margin:9px 0; font:600 22px 'Barlow Condensed',sans-serif; }
+.deep-dive-check { display:flex; gap:9px; align-items:flex-start; color:#c0cbd0; font-size:11px; line-height:1.6; }
+.deep-dive-check input { accent-color:var(--cyan); }
+.report-panel textarea { width:100%; resize:vertical; padding:13px; margin:3px 0 12px; border:1px solid #35434d; background:#0b1218; color:var(--text); font:12px/1.7 'DM Sans',sans-serif; }
+.report-panel textarea:focus { outline:1px solid var(--cyan); }
+.report-panel .primary-button { border:0; cursor:pointer; }
+.primary-button:disabled { opacity:.35; cursor:not-allowed; transform:none; }
+.report-panel>small { display:block; margin-top:9px; color:#74838d; font:9px 'DM Mono',monospace; }
+.locked-report { display:flex; gap:14px; align-items:center; margin:18px 0; padding:16px; border:1px dashed #394650; color:#71828d; }
+.locked-report>span { color:var(--accent); font-size:22px; }
+.locked-report div { display:flex; flex-direction:column; gap:5px; }
+.locked-report strong { font:10px 'DM Mono',monospace; letter-spacing:.8px; }
+.locked-report small { color:#83929b; font-size:10px; }
+.game-footer { display:flex; justify-content:space-between; gap:12px; padding:25px 0; margin-top:35px; border-top:1px solid var(--line); color:#667681; font:8px 'DM Mono',monospace; letter-spacing:.6px; }
+.completion-panel { margin:60px auto; max-width:850px; padding:36px; }
+.completion-mark { display:grid; place-items:center; width:46px; height:46px; margin-bottom:24px; border:1px solid var(--cyan); color:var(--cyan); font-size:24px; }
+.completion-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:25px 0; }
+.completion-stats div { display:flex; flex-direction:column; gap:5px; padding:15px; background:#0b1218; border:1px solid var(--line); }
+.completion-stats strong { color:var(--cyan); font:25px 'Barlow Condensed',sans-serif; }
+.completion-stats span { color:#788893; font:8px 'DM Mono',monospace; }
+.report-review { padding:18px; border:1px solid var(--line); background:#0b1218; }
+.report-review p { margin:12px 0 0; color:#c1cbd0; font-size:12px; line-height:1.8; white-space:pre-wrap; }
+.completion-actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:22px; }
+.secondary-button { display:inline-flex; align-items:center; padding:14px 17px; border:1px solid #3a4852; color:#b3c0c7; font:9px 'DM Mono',monospace; }
+@media(max-width:850px) { .investigation-layout { grid-template-columns:1fr; } .branch-sidebar { display:grid; grid-template-columns:1fr 1fr; gap:4px 8px; } .branch-sidebar>.panel-kicker,.sidebar-intro,.hint-box { grid-column:1/-1; } .branch-button { margin:0; } }
+@media(max-width:600px) { .game-shell { padding:0 4%; } .game-nav { height:65px; } .mission-nav-label { display:none; } .level-heading,.play-header { display:block; } .level-heading>p { margin-top:12px; } .level-grid { grid-template-columns:1fr; } .scenario-panel { padding:18px; } .scenario-meta { font-size:8px; } .play-meta { align-items:flex-start; margin-top:14px; } .progress-label { font-size:8px; } .evidence-list { grid-template-columns:1fr; } .branch-sidebar { grid-template-columns:1fr; } .completion-panel { margin:30px 0; padding:22px; } .completion-stats { grid-template-columns:1fr; } .game-footer { flex-direction:column; } }
