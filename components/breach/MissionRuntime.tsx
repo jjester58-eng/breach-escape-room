@@ -22,6 +22,7 @@ type TimerProps = {
 export function MissionCountdown({ remainingSeconds, running, expired, onToggle, reducedMotion, onReducedMotionChange }: TimerProps) {
   const warning = remainingSeconds <= 30 ? "critical" : remainingSeconds <= 60 ? "warning" : "normal";
   const flash = remainingSeconds <= 10 && remainingSeconds > 0 && !reducedMotion;
+  const pulseClass = reducedMotion ? "" : remainingSeconds <= 20 ? "timer-pulse-urgent" : remainingSeconds <= 30 ? "timer-pulse-fast" : remainingSeconds <= 45 ? "timer-pulse-medium" : remainingSeconds <= 60 ? "timer-pulse-slow" : "";
   const notice = remainingSeconds === 0 ? "TIME EXPIRED" :
     remainingSeconds <= 10 ? "FINAL SECONDS" :
     remainingSeconds <= 20 ? "FINAL COUNTDOWN" :
@@ -30,7 +31,7 @@ export function MissionCountdown({ remainingSeconds, running, expired, onToggle,
     remainingSeconds <= 60 ? "ONE-MINUTE WARNING" : "INCIDENT CLOCK";
 
   return (
-    <section className={`runtime-timer timer-${warning} ${flash ? "timer-flash" : ""}`} aria-live={remainingSeconds <= 60 ? "assertive" : "off"}>
+    <section className={`runtime-timer timer-${warning} ${pulseClass} ${flash ? "timer-flash" : ""}`} aria-live={remainingSeconds <= 60 ? "assertive" : "off"}>
       <div className="runtime-timer-copy">
         <span className="runtime-kicker">{notice}</span>
         <strong className="runtime-time" aria-label={`${Math.floor(remainingSeconds / 60)} minutes ${remainingSeconds % 60} seconds remaining`}>{formatTime(remainingSeconds)}</strong>
