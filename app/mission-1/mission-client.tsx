@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { InvestigationHeatmap, type HeatNode } from "@/components/breach/MissionRuntime";
+import { MISSION_RUNTIME_CONFIG } from "@/lib/breach/mission-runtime";
 
 type SavedProgress = { version: 1; level: number; activeBranch: string; answers: Record<string, number>; report: string; submitted: boolean; showHint: boolean; deepDive: boolean; studentName: string; certificateReady: boolean; savedAt: string };
 
@@ -95,6 +97,7 @@ export default function MissionOneClient() {
   const [certificateReady, setCertificateReady] = useState(false);
   const [progressLoaded, setProgressLoaded] = useState(false);
   const [restoredProgress, setRestoredProgress] = useState(false);
+  const [selectedHeatNode, setSelectedHeatNode] = useState("sender");
 
   useEffect(() => {
     try {
@@ -148,6 +151,12 @@ export default function MissionOneClient() {
   const progress = selectedLevel ? Math.min(100, Math.round((Math.min(completedBranches, requiredBranches) / requiredBranches) * 100)) : 0;
   const canReport = selectedLevel !== undefined && completedBranches >= requiredBranches && (level !== 4 || deepDive);
   const score = useMemo(() => Object.entries(answers).filter(([key, value]) => value >= 0 && branches.some((b) => key.startsWith(b.id + "-") && b.challenges[Number(key.split("-")[1])]?.choices[value]?.correct)).length, [answers]);
+  const heatNodes: HeatNode[] = MISSION_RUNTIME_CONFIG["mission-1"].targets.map((target, index) => {
+    const branch = branches.find((item) => item.id === ["phishing", "malware", "credentials", "reporting"][index]);
+    const correct = branch?.challenges.filter((challenge, questionIndex) => answers[branch.id + "-" + questionIndex] !== undefined && challenge.choices[answers[branch.id + "-" + questionIndex]]?.correct).length ?? 0;
+    const incorrect = branch?.challenges.filter((challenge, questionIndex) => answers[branch.id + "-" + questionIndex] !== undefined && !challenge.choices[answers[branch.id + "-" + questionIndex]]?.correct).length ?? 0;
+    return { ...target, proximity: Math.max(0, Math.min(100, 10 + correct * 42 - incorrect * 8)) };
+  });
 
   function chooseAnswer(branchId: string, index: number, choiceIndex: number) {
     const key = branchId + "-" + index;
@@ -236,6 +245,7 @@ export default function MissionOneClient() {
       <div className="autosave-strip"><span>✓ AUTO-SAVE ON THIS DEVICE</span><button onClick={() => { if (window.confirm("Start this investigation over? Your saved answers and report on this browser will be erased.")) { window.localStorage.removeItem("breach:mission-1:v1"); startLevel(level); } }}>START OVER ↻</button></div>
       {restoredProgress && <div className="restore-notice">SAVED INVESTIGATION RESTORED — You can continue where you left off. Your work is saved automatically on this browser.</div>}
       <div className="progress-wrap"><div className="progress-label"><span>INVESTIGATION PROGRESS</span><strong>{Math.min(completedBranches, requiredBranches)} / {requiredBranches} REQUIRED BRANCHES</strong></div><div className="progress-track"><div className="progress-fill" style={{ width: progress + "%" }} /></div></div>
+      <InvestigationHeatmap nodes={heatNodes} selectedId={selectedHeatNode} onSelect={setSelectedHeatNode} />
       <section className="email-panel"><div className="email-toolbar"><span>INCOMING MESSAGE / EMPLOYEE REPORT</span><span className="alert-pill">SUSPICIOUS</span></div><div className="email-body"><div className="email-line"><span>FROM</span><strong>District Payroll Services &lt;payroll-update@district-payroll.example&gt;</strong></div><div className="email-line"><span>SUBJECT</span><strong>Action Required — Payroll Information Update</strong></div><p>Please review the attached payroll update and verify your information by 3:00 PM today to prevent delays to your next paycheck.</p><div className="email-attachment">▤ &nbsp; Payroll_Update.pdf &nbsp; <small>ATTACHMENT</small></div><div className="email-link">↗ &nbsp; district-payroll-update.example</div></div></section>
       <div className="investigation-layout">
         <aside className="branch-sidebar"><div className="panel-kicker">INVESTIGATION PATHS</div><p className="sidebar-intro">Choose an evidence path. You can investigate in any order.</p>{branches.map((branch) => { const done = branch.challenges.slice(0, questionsPerBranch).every((_, i) => answers[branch.id + "-" + i] !== undefined); return <button key={branch.id} className={`branch-button ${activeBranch === branch.id ? "branch-selected" : ""} ${done ? "branch-done" : ""}`} onClick={() => setActiveBranch(branch.id)}><span className="branch-icon">{branch.icon}</span><span className="branch-button-copy"><strong>{branch.title}</strong><small>{branch.subtitle}</small></span><span className="branch-check">{done ? "✓" : "↗"}</span></button>; })}<div className="hint-box"><button onClick={() => setShowHint(!showHint)} className="hint-toggle"> {showHint ? "HIDE" : "SHOW"} FIELD GUIDANCE</button>{showHint && <p>{level === 1 ? "Start with the sender details. Look for mismatched domains, unexpected attachments, and urgent requests." : level === 2 ? "Compare the evidence. Ask what the attacker wants and what action could create the greatest risk." : level === 3 ? "Correlate indicators across the email, endpoint, and account activity. Preserve evidence before recommending action." : "Think like the incident commander: scope, impact, evidence integrity, containment, and communication all matter."}</p>}</div></aside>
