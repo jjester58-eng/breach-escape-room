@@ -220,7 +220,7 @@ function makeEvidencePng(canvas: HTMLCanvasElement, message: string): string {
   ctx.fillStyle = "#6b7370"; ctx.fillRect(0, 205, width, 15);
 
   const data = ctx.getImageData(0, 0, width, height);
-  const payload = new TextEncoder().encode(message + "\\0");
+  const payload = new TextEncoder().encode(message + "\0");
   const bits: number[] = [];
   for (const byte of payload) for (let bit = 7; bit >= 0; bit--) bits.push((byte >> bit) & 1);
   if (bits.length > width * height) return "";
