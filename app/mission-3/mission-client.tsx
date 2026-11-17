@@ -198,24 +198,39 @@ function makeEvidencePng(canvas: HTMLCanvasElement, message: string): string {
   if (!ctx) return "";
   const width = 360, height = 220;
   canvas.width = width; canvas.height = height;
-  const data = ctx.createImageData(width, height);
-  for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
-    const i = (y * width + x) * 4;
-    const wave = Math.sin(x * 0.055) * 14 + Math.cos(y * 0.07) * 12;
-    data.data[i] = 48 + ((x * 3 + y + wave) % 90);
-    data.data[i + 1] = 75 + ((y * 2 + x / 3 + wave) % 100);
-    data.data[i + 2] = 92 + ((x + y * 2) % 105);
-    data.data[i + 3] = 255;
-  }
-  const payload = new TextEncoder().encode(message + "\0");
+
+  // Draw a simple, ordinary-looking office lobby before embedding the message.
+  const wall = ctx.createLinearGradient(0, 0, 0, height);
+  wall.addColorStop(0, "#b9c8c8"); wall.addColorStop(0.72, "#d6d5c8"); wall.addColorStop(0.73, "#777f78"); wall.addColorStop(1, "#59645e");
+  ctx.fillStyle = wall; ctx.fillRect(0, 0, width, height);
+  ctx.fillStyle = "#e8e5d9"; ctx.fillRect(0, 0, width, 18);
+  ctx.fillStyle = "#526b76"; ctx.fillRect(22, 32, 105, 93);
+  ctx.fillStyle = "#b9d1d3"; ctx.fillRect(28, 38, 93, 81);
+  ctx.strokeStyle = "#6c7f82"; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(74, 38); ctx.lineTo(74, 119); ctx.moveTo(28, 78); ctx.lineTo(121, 78); ctx.stroke();
+  ctx.fillStyle = "#8b6b50"; ctx.fillRect(276, 25, 58, 132);
+  ctx.fillStyle = "#c5b39a"; ctx.fillRect(282, 31, 46, 120);
+  ctx.fillStyle = "#394b51"; ctx.fillRect(287, 37, 35, 108);
+  ctx.fillStyle = "#d5c7a9"; ctx.fillRect(147, 50, 76, 44);
+  ctx.fillStyle = "#34454a"; ctx.font = "bold 9px sans-serif"; ctx.fillText("RECEPTION", 159, 76);
+  ctx.fillStyle = "#6b5947"; ctx.fillRect(118, 139, 148, 15);
+  ctx.fillStyle = "#8b735b"; ctx.fillRect(132, 154, 10, 45); ctx.fillRect(244, 154, 10, 45);
+  ctx.fillStyle = "#435b4e"; ctx.fillRect(42, 145, 17, 43);
+  ctx.fillStyle = "#547b61"; ctx.beginPath(); ctx.arc(50, 137, 24, 0, Math.PI * 2); ctx.arc(35, 145, 15, 0, Math.PI * 2); ctx.arc(64, 148, 16, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = "#e2dfd1"; ctx.fillRect(20, 194, 320, 3);
+  ctx.fillStyle = "#6b7370"; ctx.fillRect(0, 205, width, 15);
+
+  const data = ctx.getImageData(0, 0, width, height);
+  const payload = new TextEncoder().encode(message + "\\0");
   const bits: number[] = [];
   for (const byte of payload) for (let bit = 7; bit >= 0; bit--) bits.push((byte >> bit) & 1);
   if (bits.length > width * height) return "";
-  bits.forEach((bit, index) => { const pixel = Math.floor(index / 3); const channel = index % 3; const offset = pixel * 4 + channel; data.data[offset] = (data.data[offset] & 254) | bit; });
+  bits.forEach((bit, index) => {
+    const pixel = Math.floor(index / 3), channel = index % 3, offset = pixel * 4 + channel;
+    data.data[offset] = (data.data[offset] & 254) | bit;
+  });
   ctx.putImageData(data, 0, 0);
   return canvas.toDataURL("image/png");
 }
-
 async function extractImageMessage(file: File): Promise<string> {
   const url = URL.createObjectURL(file);
   try {
