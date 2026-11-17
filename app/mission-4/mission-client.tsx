@@ -131,6 +131,7 @@ export default function MissionFourClient() {
   const [reducedMotion, setReducedMotion] = useState(false);
   const [stage, setStage] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [pendingAnswers, setPendingAnswers] = useState<Record<number, number>>({});
   const [nodes, setNodes] = useState<HeatNode[]>(initialNodes);
   const [selectedNode, setSelectedNode] = useState("pc22");
   const [hintOpen, setHintOpen] = useState(false);
@@ -169,6 +170,7 @@ export default function MissionFourClient() {
     setExpired(false);
     setStage(0);
     setAnswers({});
+    setPendingAnswers({});
     setNodes(initialNodes.map((node) => ({ ...node })));
     setSelectedNode("pc22");
     setHintsUsed(0);
@@ -189,8 +191,20 @@ export default function MissionFourClient() {
 
   function choose(index: number) {
     if (answers[stage] !== undefined || expired || !running) return;
-    const answer = current.options[index];
-    setAnswers((previous) => ({ ...previous, [stage]: index }));
+    setPendingAnswers((previous) => ({ ...previous, [stage]: index }));
+    setHintOpen(false);
+  }
+
+  function confirmChoice() {
+    const selected = pendingAnswers[stage];
+    if (selected === undefined || answers[stage] !== undefined || expired || !running) return;
+    const answer = current.options[selected];
+    setAnswers((previous) => ({ ...previous, [stage]: selected }));
+    setPendingAnswers((previous) => {
+      const next = { ...previous };
+      delete next[stage];
+      return next;
+    });
     setNodes((previous) => previous.map((node) => node.id === current.targetId
       ? { ...node, proximity: Math.max(0, Math.min(100, node.proximity + (answer.correct ? 55 : -18))) }
       : node));
@@ -256,7 +270,7 @@ export default function MissionFourClient() {
           <div className="evidence-heading"><div><div className="panel-kicker">STAGE 0{stage + 1} / NETWORK LOGS</div><h2>{current.title}</h2><p>{current.subtitle}</p></div><span className="evidence-count">{current.evidence.length} RECORDS</span></div>
           <div className="mission2-briefing">{current.briefing}</div>
           <div className="mission2-evidence">{current.evidence.map((item) => <div className="mission2-evidence-row" key={item.label}><span>{item.label}</span><strong>{item.value}</strong></div>)}</div>
-          <div className="challenge-card"><div className="challenge-number">DECISION {stage + 1} / 5</div><h3>{current.question}</h3><p className="challenge-context">{current.context}</p><div className="choice-list">{current.options.map((option, index) => <button type="button" key={option.label} disabled={answers[stage] !== undefined || !running} className={"choice-button " + (answers[stage] === index ? (option.correct ? "choice-correct" : "choice-wrong") : "") + (answers[stage] !== undefined && option.correct ? " choice-reveal" : "")} onClick={() => choose(index)}><span className="choice-letter">{String.fromCharCode(65 + index)}</span><span>{option.label}</span>{answers[stage] === index && <b>{option.correct ? "✓" : "×"}</b>}</button>)}</div>{answers[stage] !== undefined && <div className={"feedback-box " + (current.options[answers[stage]].correct ? "" : "feedback-review")}><strong>{current.options[answers[stage]].correct ? "ANALYST NOTE — CORRECT" : "ANALYST NOTE — REVIEW"}</strong><p>{current.options[answers[stage]].feedback}</p><small>{current.explanation}</small></div>}</div>
+          <div className="challenge-card"><div className="challenge-number">DECISION {stage + 1} / 5</div><h3>{current.question}</h3><p className="challenge-context">{current.context}</p><div className="choice-list">{current.options.map((option, index) => <button type="button" key={option.label} disabled={answers[stage] !== undefined || !running} className={"choice-button " + (answers[stage] === index ? (option.correct ? "choice-correct" : "choice-wrong") : pendingAnswers[stage] === index ? "choice-selected" : "") + (answers[stage] !== undefined && option.correct ? " choice-reveal" : "")} onClick={() => choose(index)}><span className="choice-letter">{String.fromCharCode(65 + index)}</span><span>{option.label}</span>{answers[stage] === index && <b>{option.correct ? "✓" : "×"}</b>}{answers[stage] === undefined && pendingAnswers[stage] === index && <b>SELECTED</b>}</button>)}</div>{answers[stage] === undefined && <div className="mission4-confirm-row"><span>{pendingAnswers[stage] === undefined ? "Select a response, then confirm it." : "Review your choice. You can select a different response before confirming."}</span><button type="button" className="primary-button" disabled={pendingAnswers[stage] === undefined || !running} onClick={confirmChoice}>CONFIRM RESPONSE ↗</button></div>}{answers[stage] !== undefined && <div className={"feedback-box " + (current.options[answers[stage]].correct ? "" : "feedback-review")}><strong>{current.options[answers[stage]].correct ? "ANALYST NOTE — CORRECT" : "ANALYST NOTE — REVIEW"}</strong><p>{current.options[answers[stage]].feedback}</p><small>{current.explanation}</small></div>}</div>
           <div className="mission2-stage-controls"><button className="secondary-button" disabled={stage === 0} onClick={() => { setStage((value) => Math.max(0, value - 1)); setHintOpen(false); }}>← PREVIOUS STAGE</button><button className="primary-button" disabled={answers[stage] === undefined || stage === 4 || !running} onClick={() => { setStage((value) => Math.min(4, value + 1)); setHintOpen(false); }}>NEXT INVESTIGATION STAGE ↗</button></div>
           <div className="hint-box"><button className="hint-toggle" disabled={!running || answers[stage] !== undefined || hintsUsed >= (difficulty === "rookie" ? 5 : difficulty === "analyst" ? 3 : 1)} onClick={useHint}>{hintOpen ? "HIDE" : "REQUEST"} ANALYST HINT · COST 3 POINTS</button>{hintOpen && <p>{current.hint}</p>}<small className="runtime-hint-limit">{difficulty === "rookie" ? 5 : difficulty === "analyst" ? 3 : 1} hints maximum for this role</small></div>
         </section>
