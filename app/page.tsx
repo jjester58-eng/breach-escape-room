@@ -3,7 +3,7 @@ import Link from "next/link";
 const missions = [
   { number: "01", name: "The Infiltration", topic: "Phishing · Social Engineering · Malware", status: "PLAYABLE", href: "/mission-1" },
   { number: "02", name: "The Impostor", topic: "Digital Certificates · PKI · Trust", status: "PLAYABLE", href: "/mission-2" },
-  { number: "03", name: "Hidden Evidence", topic: "Steganography · Cryptography · Forensics", status: "LOCKED" },
+  { number: "03", name: "Hidden Evidence", topic: "File Integrity · Steganography · Cryptography", status: "PLAYABLE", href: "/mission-3" },
   { number: "04", name: "Network Under Attack", topic: "Packets · Network Defense · Lateral Movement", status: "LOCKED" },
   { number: "05", name: "Incident Response", topic: "Risk · Containment · Recovery", status: "LOCKED" },
 ];
