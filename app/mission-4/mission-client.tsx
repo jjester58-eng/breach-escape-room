@@ -11,7 +11,7 @@ type Stage = { title: string; subtitle: string; briefing: string; evidence: { la
 const stages: Stage[] = [
   {
     title: "Find the Unusual Connection", subtitle: "Identify the first suspicious network indicator",
-    briefing: "The monitoring console flags an outbound connection that does not match the workstation's normal pattern. All addresses and hostnames below are fictional training data.",
+    briefing: "The network alert shows a computer connecting to a website it does not normally contact. All addresses and website names in this activity are made up for training.",
     evidence: [
       { label: "16:41:02", value: "PC-22  →  203.0.113.77:443  |  outbound TLS session" },
       { label: "16:41:04", value: "DNS-GW-01  |  cdn-roobank-update.example resolved to 203.0.113.77" },
@@ -19,13 +19,13 @@ const stages: Stage[] = [
       { label: "NETWORK NOTE", value: "203.0.113.0/24 is reserved for documentation in this simulation" },
     ],
     question: "Which event is the strongest starting point for the investigation?",
-    context: "Do not assume every external connection is malicious. Compare the host, destination, and surrounding evidence.",
+    context: "Not every outside connection is dangerous. Compare the website, destination address, and other clues before deciding.",
     options: [
       { label: "PC-22 connecting to 203.0.113.77 after resolving an unfamiliar update hostname", correct: true, feedback: "Correct. The unusual hostname and matching destination create a lead worth correlating with endpoint and DNS records." },
       { label: "PC-18 connecting to its known approved service", correct: false, feedback: "That connection is explicitly identified as normal approved traffic. It is a useful comparison, not the suspicious lead." },
       { label: "Any use of port 443 because HTTPS is always suspicious", correct: false, feedback: "Port 443 is commonly used for legitimate encrypted web traffic. Context and destination matter." },
     ],
-    explanation: "A destination, hostname, timestamp, and source endpoint should be correlated. A single indicator is a lead—not proof of compromise.",
+    explanation: "Compare the website name, destination address, time, and computer that made the connection. One clue is a reason to investigate, not proof that a computer was hacked.",
     hint: "Compare the DNS answer and outbound connection from the same workstation. The matching destination is the useful link.",
     targetId: "pc22",
   },
@@ -39,13 +39,13 @@ const stages: Stage[] = [
       { label: "BASELINE", value: "PC-22 has no prior SMB session to FILE-SRV-01 in the supplied 30-day sample" },
     ],
     question: "Which connection is the strongest indicator of possible lateral movement?",
-    context: "Lateral movement means activity from one system toward another internal system after an initial foothold.",
+    context: "Lateral movement happens when an attacker gets into one computer and then tries to reach other computers on the same network.",
     options: [
       { label: "The new SMB session from PC-22 to FILE-SRV-01", correct: true, feedback: "Correct. The new source-to-server relationship is unusual for PC-22 and follows the suspicious outbound event." },
       { label: "The established PC-14 baseline session", correct: false, feedback: "The log identifies this as established baseline activity. It provides a comparison." },
       { label: "The DNS query from PC-22 by itself", correct: false, feedback: "The DNS query is useful evidence, but the new internal SMB session is the clearest supplied lateral-movement lead." },
     ],
-    explanation: "Correlate the timeline and baseline. A new internal connection can indicate lateral movement, but the analyst should validate authentication and server logs before declaring the server compromised.",
+    explanation: "Compare the times with the network's normal activity. A new connection to another computer could be a sign that an attacker is moving through the network. Check the login and server records before saying the server was hacked.",
     hint: "Look for a new internal connection that is absent from the workstation's normal baseline.",
     targetId: "filesrv",
   },
@@ -59,13 +59,13 @@ const stages: Stage[] = [
       { label: "16:10:00", value: "Last scheduled backup event: completed from BACKUP-01" },
     ],
     question: "What is the most defensible interpretation of the authentication record?",
-    context: "A service account used interactively may indicate credential misuse, but the record should be corroborated before assigning intent.",
+    context: "A service account is usually used by a program, not a person signing in. This sign-in is unusual, but check other records before deciding what happened.",
     options: [
       { label: "The svc-backup interactive sign-in from PC-22 is anomalous and needs investigation", correct: true, feedback: "Correct. The account's intended use and the source workstation do not match the documented baseline." },
       { label: "The account is safe because the sign-in succeeded", correct: false, feedback: "Successful authentication only means the credentials were accepted. It does not establish that the activity was authorized." },
       { label: "The database is confirmed compromised because an account signed in", correct: false, feedback: "The supplied record shows an authentication event, not database access. Do not claim more than the evidence supports." },
     ],
-    explanation: "Investigators should preserve the authentication event, check account ownership and expected behavior, and correlate access to the target service.",
+    explanation: "Save the login record, find out what the account is supposed to do, and compare it with the other activity on the server.",
     hint: "Compare the account's intended use with the type and source of the sign-in.",
     targetId: "auth",
   },
@@ -79,13 +79,13 @@ const stages: Stage[] = [
       { label: "BUSINESS IMPACT", value: "Broad network shutdown would interrupt unrelated services" },
     ],
     question: "Which containment recommendation best balances risk and business impact?",
-    context: "Containment should limit spread while preserving evidence and avoiding unnecessary disruption.",
+    context: "Containment means stopping the problem from spreading while saving evidence and keeping other work running when possible.",
     options: [
       { label: "Isolate PC-22 using the approved endpoint procedure, preserve logs, and restrict the suspicious account pending validation", correct: true, feedback: "Correct. This targets the likely affected endpoint, preserves evidence, and addresses the anomalous identity without declaring every connected server compromised." },
       { label: "Disconnect every network device immediately", correct: false, feedback: "A broad shutdown creates unnecessary business impact and may destroy useful network context. Use proportionate containment." },
       { label: "Delete the suspicious logs and reboot PC-22", correct: false, feedback: "Deleting logs destroys evidence, and rebooting may alter volatile information. Preserve evidence and follow the incident process." },
     ],
-    explanation: "Containment decisions should be evidence-based, proportionate, and coordinated. Preserve relevant logs and document the time and scope of every action.",
+    explanation: "Make decisions based on the clues you have. Choose actions that deal with the problem without shutting down more than needed. Save the logs and record what was done and when.",
     hint: "Which action contains the most likely foothold without taking unrelated systems offline?",
     targetId: "pc22",
   },
@@ -99,14 +99,14 @@ const stages: Stage[] = [
       { label: "NEXT MISSION", value: "Incident Response — scope, contain, eradicate, recover" },
     ],
     question: "Which incident statement is the most accurate?",
-    context: "A strong analyst reports facts, identifies hypotheses, and names the evidence needed to resolve uncertainty.",
+    context: "A good report explains what the evidence shows, what might have happened, and what the team still needs to check.",
     options: [
-      { label: "PC-22 is the likely affected endpoint; lateral movement and credential misuse are supported leads, while server compromise and exfiltration remain unconfirmed", correct: true, feedback: "Correct. This conclusion is specific, evidence-based, and careful about what has not yet been established." },
+      { label: "PC-22 is the computer most likely affected. The clues suggest an attacker may have tried to reach another computer and misuse an account. The team has not confirmed that the server was hacked or that data was stolen.", correct: true, feedback: "Correct. This conclusion is specific, evidence-based, and careful about what has not yet been established." },
       { label: "The attacker definitely stole the entire database", correct: false, feedback: "No supplied record demonstrates database access or exfiltration. This overstates the evidence." },
       { label: "Nothing happened because all network traffic used standard ports", correct: false, feedback: "Standard ports do not make activity safe. The timeline and baseline deviations are the important evidence." },
     ],
-    explanation: "The handoff should include indicators, confidence, confirmed scope, open questions, and prioritized evidence requests.",
-    hint: "Choose the statement that reports the strongest supported conclusion without turning an unanswered question into a fact.",
+    explanation: "Your report should list the important clues, how sure you are, what systems may be affected, what is still unknown, and what the team should check next.",
+    hint: "Choose the statement that best matches the evidence. Do not guess or claim something happened if the logs do not show it.",
     targetId: "db",
   },
 ];
@@ -235,7 +235,7 @@ export default function MissionFourClient() {
           <div className="completion-mark">{submitted ? "✓" : "!"}</div>
           <div className="eyebrow">MISSION 04 / {submitted ? "REPORT RECEIVED" : "TIME EXPIRED"}</div>
           <h1 className="game-title">{submitted ? <>NETWORK <em>CONTAINED</em></> : <>INCIDENT <em>CONTINUES</em></>}<span className="accent">.</span></h1>
-          <p className="game-lead">{submitted ? "Your incident determination has been recorded in this browser session." : "The clock reached zero. Your investigation is locked, but the evidence you collected is still available for review."}</p>
+          <p className="game-lead">{submitted ? "Your incident determination has been recorded in this browser session." : "Time is up, so the investigation is locked. You can still review the evidence you collected."}</p>
           <div className="completion-stats"><div><strong>{finalScore}/100</strong><span>MISSION SCORE</span></div><div><strong>{correctCount}/5</strong><span>CORRECT DECISIONS</span></div><div><strong>{hintsUsed}</strong><span>HINTS USED</span></div></div>
           <div className="report-review"><div className="panel-kicker">INCIDENT DETERMINATION</div><p>{report || "No final incident report was submitted before the countdown expired."}</p></div>
           <div className="completion-actions"><button className="secondary-button" onClick={() => { setDifficulty(null); setDeadline(null); setExpired(false); setSubmitted(false); }}>RETURN TO ROLE SELECTION</button><button className="secondary-button" onClick={() => difficulty && start(difficulty)}>RESTART THIS INCIDENT ↻</button><Link className="secondary-button" href="/">RETURN TO CASE FILES</Link></div>
