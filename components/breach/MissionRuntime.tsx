@@ -35,11 +35,11 @@ export function MissionCountdown({ remainingSeconds, running, expired, onToggle,
       <div className="runtime-timer-copy">
         <span className="runtime-kicker">{notice}</span>
         <strong className="runtime-time" aria-label={`${Math.floor(remainingSeconds / 60)} minutes ${remainingSeconds % 60} seconds remaining`}>{formatTime(remainingSeconds)}</strong>
-        <span className="runtime-timer-status">{expired ? "INVESTIGATION LOCKED" : running ? "LIVE INCIDENT SIMULATION" : "CLOCK PAUSED"}</span>
+        <span className="runtime-timer-status">{expired ? "TIME UP — INVESTIGATION LOCKED" : running ? "INCIDENT IN PROGRESS" : "CLOCK PAUSED"}</span>
       </div>
       <div className="runtime-timer-actions">
-        <button type="button" className="runtime-pause" onClick={onToggle} disabled={expired}>{running ? "PAUSE CLOCK" : "RESUME CLOCK"}</button>
-        <label className="runtime-accessibility"><input type="checkbox" checked={reducedMotion} onChange={(event) => onReducedMotionChange(event.target.checked)} /> REDUCE FLASHING</label>
+        <button type="button" className="runtime-pause" onClick={onToggle} disabled={expired}>{running ? "PAUSE TIMER" : "RESUME TIMER"}</button>
+        <label className="runtime-accessibility"><input type="checkbox" checked={reducedMotion} onChange={(event) => onReducedMotionChange(event.target.checked)} /> LESS FLASHING</label>
       </div>
     </section>
   );
@@ -60,7 +60,7 @@ export function InvestigationHeatmap({ nodes, selectedId, onSelect }: HeatmapPro
         <div><span className="runtime-kicker">INVESTIGATION HEATMAP</span><h2>FOLLOW THE EVIDENCE<span>.</span></h2></div>
         <span className="runtime-live-label">HOT / COLD TRACKING</span>
       </div>
-      <p className="runtime-help">Colors show how close your current evidence trail is to the investigation target. A red lead is a strong match—not automatic proof that a system is compromised.</p>
+      <p className="runtime-help">The colors show how well each clue matches what you are looking for. Red means you are getting warmer. It is a strong clue, but you still need to check the evidence.</p>
       <div className="runtime-heat-legend" aria-label="Heatmap color scale">
         {[
           { label: "COLD", color: "#2670da" },
@@ -82,7 +82,7 @@ export function InvestigationHeatmap({ nodes, selectedId, onSelect }: HeatmapPro
           );
         })}
       </div>
-      {selected && <div className="runtime-selected-clue"><span className="runtime-kicker">SELECTED LEAD / {selected.label}</span><p>{selected.clue}</p><div className="runtime-heat-meter"><span style={{ width: selected.proximity + "%", background: heatColor(selected.proximity) }} /></div><small>{heatLabel(selected.proximity)} — {selected.proximity}% investigative proximity</small></div>}
+      {selected && <div className="runtime-selected-clue"><span className="runtime-kicker">SELECTED CLUE / {selected.label}</span><p>{selected.clue}</p><div className="runtime-heat-meter"><span style={{ width: selected.proximity + "%", background: heatColor(selected.proximity) }} /></div><small>{heatLabel(selected.proximity)} — {selected.proximity}% match</small></div>}
     </section>
   );
 }
@@ -92,8 +92,8 @@ type ScoreProps = { score: number; hintsUsed: number; completed: number; total: 
 export function MissionScoreboard({ score, hintsUsed, completed, total }: ScoreProps) {
   return (
     <div className="runtime-scoreboard">
-      <div><strong>{score}</strong><span>POINTS EARNED</span></div>
-      <div><strong>{completed}/{total}</strong><span>STAGES CLEARED</span></div>
+      <div><strong>{score}</strong><span>POINTS</span></div>
+      <div><strong>{completed}/{total}</strong><span>STEPS DONE</span></div>
       <div><strong>{hintsUsed}</strong><span>HINTS USED</span></div>
     </div>
   );
