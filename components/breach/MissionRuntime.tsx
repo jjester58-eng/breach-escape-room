@@ -22,7 +22,7 @@ type TimerProps = {
 export function MissionCountdown({ remainingSeconds, running, expired, onToggle, reducedMotion, onReducedMotionChange }: TimerProps) {
   const warning = remainingSeconds <= 30 ? "critical" : remainingSeconds <= 60 ? "warning" : "normal";
   const flash = remainingSeconds <= 10 && remainingSeconds > 0 && !reducedMotion;
-  const pulseClass = reducedMotion ? "" : remainingSeconds <= 20 ? "timer-pulse-urgent" : remainingSeconds <= 30 ? "timer-pulse-fast" : remainingSeconds <= 45 ? "timer-pulse-medium" : remainingSeconds <= 60 ? "timer-pulse-slow" : "";
+  const pulseClass = reducedMotion || remainingSeconds <= 10 ? "" : remainingSeconds <= 20 ? "timer-pulse-urgent" : remainingSeconds <= 30 ? "timer-pulse-fast" : remainingSeconds <= 45 ? "timer-pulse-medium" : remainingSeconds <= 60 ? "timer-pulse-slow" : "";
   const notice = remainingSeconds === 0 ? "TIME EXPIRED" :
     remainingSeconds <= 10 ? "FINAL SECONDS" :
     remainingSeconds <= 20 ? "FINAL COUNTDOWN" :
