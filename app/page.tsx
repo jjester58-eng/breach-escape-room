@@ -5,7 +5,7 @@ const missions = [
   { number: "02", name: "The Impostor", topic: "Website Certificates · PKI (Digital Trust) · HTTPS", status: "PLAYABLE", href: "/mission-2" },
   { number: "03", name: "Hidden Evidence", topic: "File Hashes · Hidden Messages · Secret Codes", status: "PLAYABLE", href: "/mission-3" },
   { number: "04", name: "Network Under Attack", topic: "Network Traffic · Suspicious Connections · Attacker Movement", status: "PLAYABLE", href: "/mission-4" },
-  { number: "05", name: "Incident Response", topic: "Incident Response · Stop the Attack · Recover", status: "LOCKED" },
+  { number: "05", name: "Incident Response", topic: "Containment · Eradication · Recovery · Risk Management", status: "PLAYABLE", href: "/mission-5" },
 ];
 
 export default function Home() {
