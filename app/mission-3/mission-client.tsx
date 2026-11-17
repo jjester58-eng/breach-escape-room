@@ -49,35 +49,35 @@ const scenarios: Scenario[] = [
         {label:"Open every file and edit anything that looks suspicious",correct:false,feedback:"Editing evidence can change it and make later analysis harder."},
         {label:"Record the evidence, preserve originals, and work from copies",correct:true,feedback:"Correct. Document what was collected, preserve the original evidence, and perform analysis on working copies."},
         {label:"Delete files that appear unrelated to the phishing email",correct:false,feedback:"A file that looks unrelated may contain important context. Do not discard evidence prematurely."}
-      ],explanation:"Digital forensics depends on preservation, documentation, and repeatable analysis. A hash can help verify that a file has not changed since a known baseline was recorded.",hint:"Think about how you would prove later that your analysis did not alter the original evidence."},
+      ],explanation:"Digital forensics means carefully collecting and checking digital evidence. Save the original, write down what you do, and use a file hash to check whether a file has changed.",hint:"Think about how you would prove later that your analysis did not alter the original evidence."},
       {title:"The Fingerprint Test",subtitle:"Calculate a real SHA-256 hash",kind:"hash",briefing:"The email archive retained the original attachment record. The workstation copy may have changed after delivery. Download both provided text artifacts, then upload each one to calculate its SHA-256 digest in your browser.",evidence:[
         {label:"ARCHIVE BASELINE",value:"Payroll_Update.pdf.exe (preserved reference copy)"},
         {label:"WORKSTATION COPY",value:"Payroll_Update_RECOVERED.txt"},
         {label:"METHOD",value:"SHA-256 using the browser's Web Crypto API"},
         {label:"IMPORTANT",value:"A mismatch proves the bytes differ; it does not identify who changed them or why"}
-      ],question:"Compare the two files. Does the recovered workstation copy match the archive baseline?",context:"Use the download buttons and upload the files one at a time. The app calculates the digest from the actual file bytes.",explanation:"SHA-256 produces a fixed-length digest. Even a small content change should produce a different digest. A mismatch is evidence of a change, not proof of malicious intent.",hint:"The archive copy is the baseline. Upload the recovered workstation copy and confirm that its SHA-256 digest does not match."},
+      ],question:"Compare the two files. Does the recovered workstation copy match the archive baseline?",context:"Use the download buttons and upload the files one at a time. The app calculates the digest from the actual file bytes.",explanation:"SHA-256 creates a digital fingerprint for a file. If even a small part of the file changes, the fingerprint should change too. A different hash tells you the files are different, but it does not tell you why.",hint:"The archive copy is the original reference. Upload the copy recovered from the computer and check whether its SHA-256 hash is different."},
       {title:"The Photograph",subtitle:"Recover a hidden message",kind:"stego",briefing:"A photo named lobby_photo.png was stored beside the recovered attachment. It looks ordinary, but the incident team suspects it carries a concealed note. Download the evidence image and use the extraction tool to inspect its pixel data.",evidence:[
         {label:"FILE",value:"lobby_photo.png"},
         {label:"VISIBLE CONTENT",value:"A routine office-lobby image"},
         {label:"ANALYST NOTE",value:"The image may contain data in the least-significant bits of its color channels"},
         {label:"TECHNIQUE",value:"LSB steganography"}
-      ],question:"What does the hidden message tell you to inspect next?",context:"The image is generated as a real PNG evidence artifact. Download it, upload it to the extractor, and recover the embedded text.",explanation:"Steganography hides the existence of a message inside another file. This differs from encryption, which makes a message unreadable without a key.",hint:"Download the PNG evidence, then upload that same file to the extraction tool. Look for the recovered instruction."},
+      ],question:"What does the hidden message tell you to inspect next?",context:"The image is generated as a real PNG evidence artifact. Download it, upload it to the extractor, and recover the embedded text.",explanation:"Steganography hides a message inside another file, such as a picture. Encryption scrambles a message so people cannot read it without the right key.",hint:"Download the PNG evidence, then upload that same file to the extraction tool. Look for the recovered instruction."},
       {title:"The Encrypted Note",subtitle:"Decode the recovered communication",kind:"cipher",briefing:"A short note was recovered from the same folder. It is not a hash: the characters have been shifted using a simple Caesar cipher. The note gives a meeting time.",evidence:[
         {label:"FILE",value:"note.enc"},
         {label:"CIPHERTEXT",value:"PHQHWLQJ DW 6:30"},
         {label:"KNOWN METHOD",value:"Caesar shift"},
         {label:"CLUE",value:"Try shifting letters backward by three positions"}
-      ],question:"Decode the message and enter the plaintext.",context:"Use the shift control or enter your own decoded text. Numbers and spaces remain unchanged.",explanation:"A Caesar cipher substitutes each letter with another letter a fixed number of positions away. It is useful for learning substitution, but it is not secure modern encryption.",hint:"Move each letter three positions backward in the alphabet."},
+      ],question:"Decode the message and enter the plaintext.",context:"Use the shift control or enter your own decoded text. Numbers and spaces remain unchanged.",explanation:"A Caesar cipher shifts each letter a set number of places in the alphabet. It is a good way to learn about codes, but it is not safe for protecting real information.",hint:"Move each letter three positions backward in the alphabet."},
       {title:"Reconstruct the Evidence",subtitle:"Make a defensible finding",kind:"decision",briefing:"You have compared file fingerprints, recovered a hidden image message, and decoded the note. The incident lead needs a careful summary before the team moves to network investigation.",evidence:[
         {label:"HASH RESULT",value:"The recovered attachment differs from the archive baseline"},
         {label:"IMAGE MESSAGE",value:"CHECK THE ARCHIVE COPY"},
         {label:"DECODED NOTE",value:"MEETING AT 6:30"},
         {label:"LIMITATION",value:"These artifacts do not identify who made the change"}
       ],question:"Which conclusion is best supported by the evidence?",context:"Separate what the evidence demonstrates from what still needs investigation.",choices:[
-        {label:"The hash mismatch proves the employee intentionally modified the attachment",correct:false,feedback:"A mismatch proves the files differ. It does not identify who changed the file or establish intent."},
+        {label:"The hash mismatch proves the employee intentionally modified the attachment",correct:false,feedback:"Different hashes show that the files are not identical. They do not tell you who changed the file or why."},
         {label:"The recovered file differs from the archived copy; the hidden note and cipher provide leads for the next investigation",correct:true,feedback:"Correct. This conclusion stays within the evidence and preserves the leads for Mission 4."},
         {label:"The hidden message proves that all files on the workstation are malicious",correct:false,feedback:"One hidden message does not establish that every file is malicious."}
-      ],explanation:"A defensible forensic conclusion distinguishes verified observations from hypotheses. Preserve the files and pass the leads to the network investigation.",hint:"Choose the statement that says exactly what the artifacts show without guessing who is responsible."}
+      ],explanation:"A good investigation report separates what you know from what you only suspect. Save the files and pass the clues to the network team.",hint:"Choose the statement that says exactly what the artifacts show without guessing who is responsible."}
     ]
   },
   {
@@ -102,25 +102,25 @@ const scenarios: Scenario[] = [
         {label:"The attachment was definitely altered by the attacker before it arrived",correct:false,feedback:"The current records do not establish when the file changed or who changed it."},
         {label:"The recovered artifacts should be compared against preserved baselines and correlated with independent logs",correct:true,feedback:"Correct. Compare integrity first, then correlate timestamps and event records before drawing conclusions."},
         {label:"The photo must be harmless because it is an image",correct:false,feedback:"Images can contain metadata or hidden payloads. File type alone does not establish trust."}
-      ],explanation:"A timeline helps direct the investigation, but timestamps can be affected by copying, system clocks, and file operations. Use independent records.",hint:"Avoid treating timestamps as proof. What can you verify first, and what independent evidence could corroborate it?"},
+      ],explanation:"A timeline helps show what may have happened and when. But file times can change when files are copied or clocks are wrong. Compare them with other records too.",hint:"Avoid treating timestamps as proof. What can you verify first, and what independent evidence could corroborate it?"},
       {title:"The Fingerprint Test",subtitle:"Compare archive and endpoint hashes",kind:"hash",briefing:"The archive team supplied a preserved reference file. The endpoint team supplied the recovered copy. Download both artifacts and calculate their SHA-256 hashes. Then explain the result.",evidence:[
         {label:"REFERENCE",value:"Archive copy captured at message receipt"},
         {label:"RECOVERED",value:"Endpoint copy captured during forensic imaging"},
         {label:"INTEGRITY QUESTION",value:"Do the files contain exactly the same bytes?"},
         {label:"CAUTION",value:"A hash is an integrity fingerprint, not a malware verdict"}
-      ],question:"Do the endpoint and archive files have matching SHA-256 digests?",context:"Use the browser hashing lab. Hash the original and recovered files, then compare the full values.",explanation:"A cryptographic hash is deterministic: identical bytes produce the same digest. A mismatch means the byte sequences differ. It does not explain the cause.",hint:"Calculate both hashes from the supplied files. Compare all 64 hexadecimal characters."},
+      ],question:"Do the endpoint and archive files have matching SHA-256 digests?",context:"Use the browser hashing lab. Hash the original and recovered files, then compare the full values.",explanation:"The same file always produces the same hash. If two hashes do not match, the files are different. The hash cannot explain what caused the change.",hint:"Calculate both hashes from the supplied files. Compare all 64 hexadecimal characters."},
       {title:"Inspect the Image",subtitle:"Extract concealed information",kind:"stego",briefing:"The photo was copied to the workstation shortly after the suspicious attachment was opened. Investigators suspect a least-significant-bit payload. Recover the message and decide how it should influence the next collection step.",evidence:[
         {label:"IMAGE",value:"lobby_photo.png"},
         {label:"FILE SIZE",value:"Small PNG image; dimensions are not proof of safety"},
         {label:"HYPOTHESIS",value:"Text may be encoded in pixel color values"},
         {label:"FORENSIC NOTE",value:"Preserve the original image and analyze a working copy"}
-      ],question:"What evidence source does the hidden message direct you toward?",context:"Download the PNG and upload it to the extractor. The message is embedded in the pixel data, not displayed as a visible caption.",explanation:"LSB steganography changes the least significant bit of selected pixel channels. The visual impact can be negligible while data is encoded in the image.",hint:"Extract the payload from the downloaded PNG. Read the recovered instruction exactly."},
+      ],question:"What evidence source does the hidden message direct you toward?",context:"Download the PNG and upload it to the extractor. The message is embedded in the pixel data, not displayed as a visible caption.",explanation:"LSB steganography hides information by changing tiny parts of the picture's pixel data. The changes are so small that the picture may look exactly the same.",hint:"Extract the payload from the downloaded PNG. Read the recovered instruction exactly."},
       {title:"Decode the Communication",subtitle:"Analyze a substitution cipher",kind:"cipher",briefing:"A note recovered beside the image contains a Caesar-shift ciphertext. The attacker may be directing an accomplice toward another evidence source. Decode it and record the exact plaintext.",evidence:[
         {label:"CIPHERTEXT",value:"WKH VHUYHU ORJ LV WKH QH[W FODY"},
         {label:"CIPHER FAMILY",value:"Caesar substitution"},
         {label:"POSSIBLE SHIFT",value:"Unknown; test likely shifts"},
         {label:"ANALYST TASK",value:"Recover the message and explain why this is not modern encryption"}
-      ],question:"What does the decrypted note say?",context:"Use the Caesar decoder. You can test shifts from 1 to 25 or enter your plaintext directly.",explanation:"Caesar substitution has only 25 nontrivial shifts and is easily brute-forced. Modern encryption uses much larger key spaces and vetted algorithms.",hint:"Try shifting backward three letters. Preserve the spaces between words."},
+      ],question:"What does the decrypted note say?",context:"Use the Caesar decoder. You can test shifts from 1 to 25 or enter your plaintext directly.",explanation:"A Caesar cipher has only 25 useful letter shifts, so it is easy to solve by trying them. Modern encryption uses much stronger methods.",hint:"Try shifting backward three letters. Preserve the spaces between words."},
       {title:"Forensic Assessment",subtitle:"Decide what the team should collect next",kind:"decision",briefing:"The hash comparison establishes a difference between two copies. The image and cipher point toward server and DNS records. The incident commander wants your next evidence request.",evidence:[
         {label:"INTEGRITY",value:"Endpoint file differs from archive reference"},
         {label:"HIDDEN PAYLOAD",value:"COMPARE TIMESTAMPS WITH DNS LOGS"},
@@ -130,12 +130,12 @@ const scenarios: Scenario[] = [
         {label:"Conclude that the attacker exfiltrated data and close the case",correct:false,feedback:"The current artifacts do not prove exfiltration. That requires network and server evidence."},
         {label:"Preserve and correlate DNS, server, and endpoint logs around the relevant timestamps",correct:true,feedback:"Correct. Independent logs can help establish what systems communicated and when."},
         {label:"Delete the recovered files because the hashes do not match",correct:false,feedback:"Do not destroy evidence. Preserve both versions and document the mismatch."}
-      ],explanation:"The next stage should correlate host, DNS, and server telemetry. This is the bridge into Mission 4.",hint:"Which independent records can confirm or challenge what the files appear to suggest?"}
+      ],explanation:"Next, compare the computer records, DNS records, and server logs. These clues will help with Mission 4.",hint:"Which independent records can confirm or challenge what the files appear to suggest?"}
     ]
   },
   {
     id: "commander", role: "INCIDENT COMMANDER", title: "The Evidence Trail", time: "55–75 MIN",
-    description: "Resolve conflicting forensic indicators, assess integrity, recover a covert message, and prioritize evidence collection under uncertainty.",
+    description: "Compare clues that do not seem to match, check whether files have changed, find the hidden message, and decide what evidence the team should collect next.",
     technical: "Evidence provenance · SHA-256 · steganography · cryptanalysis · forensic reporting",
     intro: "The RooBank incident has expanded beyond a single phishing message. Mission 1 identified the initial payroll lure and endpoint execution. Mission 2 exposed a digital identity and certificate trust problem. The forensic team now has conflicting copies, a suspicious image, and an encrypted note. You must establish what is known, identify uncertainty, and direct the next collection effort.",
     cipherText: "AOL KUZ APTLSPUL PZ UVA AOL LUK",
@@ -143,14 +143,14 @@ const scenarios: Scenario[] = [
     cipherAnswer: "THE DNS TIMELINE IS NOT THE END",
     hiddenMessage: "PRESERVE THE DNS AND AUTHENTICATION LOGS",
     minimum: 120,
-    reportPrompt: "Write an incident-command forensic assessment: evidence provenance, hash findings and limitations, hidden payload significance, cipher result, competing explanations, preservation priorities, and the next collection order.",
+    reportPrompt: "Write a report that explains where the files came from, what the hash check showed, what the hidden message said, how you solved the code, what is still unknown, and what evidence the team should collect next.",
     stages: [
       {title:"Conflicting Evidence",subtitle:"Establish provenance before interpretation",kind:"decision",briefing:"Three teams submitted files that appear to represent the same payroll attachment. Their labels and timestamps conflict. The incident commander must decide how to handle the evidence before drawing conclusions.",evidence:[
         {label:"EMAIL GATEWAY",value:"Attachment retained at 09:12; archive export completed 10:04"},
         {label:"ENDPOINT IMAGE",value:"Recovered file timestamp 09:19; copied during imaging at 11:40"},
         {label:"USER SUBMISSION",value:"A similarly named file uploaded at 13:06"},
         {label:"CHAIN OF CUSTODY",value:"User submission has no documented source or handling history"}
-      ],question:"Which evidence-handling decision is most defensible?",context:"A file's name and timestamp are not sufficient to establish its provenance. Consider preservation, working copies, and chain of custody.",choices:[
+      ],question:"Which evidence-handling decision is most defensible?",context:"A file name and date do not prove where a file came from. Keep the original safe, work with copies, and record who handled the evidence.",choices:[
         {label:"Treat all three files as identical because their names are similar",correct:false,feedback:"Similar names do not establish identical contents or provenance."},
         {label:"Preserve each item separately, document source and handling, and compare hashes before interpretation",correct:true,feedback:"Correct. Maintain separate evidence records and establish integrity before combining conclusions."},
         {label:"Discard the user submission because its chain of custody is incomplete",correct:false,feedback:"An incomplete chain reduces confidence, but the item may still be useful as a lead. Preserve and label its limitations."}
