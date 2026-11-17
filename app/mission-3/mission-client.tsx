@@ -396,6 +396,7 @@ export default function MissionThreeClient() {
           <div className="mission2-briefing">{current?.briefing}</div>
           <div className="mission2-evidence">{current?.evidence.map((item) => <div className="mission2-evidence-row" key={item.label}><span>{item.label}</span><strong>{item.value}</strong></div>)}</div>
           {current?.kind === "hash" && <div className="challenge-card"><div className="challenge-number">HANDS-ON LAB / SHA-256</div><h3>{current.question}</h3><p className="challenge-context">{current.context}</p><div className="hash-lab">
+            <div className="feedback-box"><strong>ARCHIVE BASELINE — SHA-256</strong><p className="hash-value">{baselineDigest || "Calculating reference digest…"}</p></div>
             <div className="hash-downloads"><a className="secondary-button" href={"data:text/plain;charset=utf-8," + encodeURIComponent(originalAttachment)} download="Payroll_Update_ARCHIVE.txt">DOWNLOAD ARCHIVE COPY ↓</a><a className="secondary-button" href={"data:text/plain;charset=utf-8," + encodeURIComponent(recoveredAttachment)} download="Payroll_Update_RECOVERED.txt">DOWNLOAD RECOVERED COPY ↓</a></div>
             <label htmlFor="m3-hash-upload">SELECT A FILE TO HASH</label><input id="m3-hash-upload" type="file" accept=".txt,.exe,.bin,*/*" onChange={(e) => hashFile(e.target.files?.[0])}/>
             {hashBusy && <p>Calculating SHA-256…</p>}
