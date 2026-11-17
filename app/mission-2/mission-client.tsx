@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { InvestigationHeatmap, type HeatNode } from "@/components/breach/MissionRuntime";
+import { MISSION_RUNTIME_CONFIG } from "@/lib/breach/mission-runtime";
 
 type Choice = { label: string; correct: boolean; feedback: string };
 type Stage = {
@@ -210,6 +212,7 @@ export default function MissionTwoClient() {
   const [submitted,setSubmitted]=useState(false);
   const [studentName,setStudentName]=useState("");
   const [certificate,setCertificate]=useState(false);
+  const [selectedHeatNode,setSelectedHeatNode]=useState("hostname");
 
   useEffect(()=>{try{const raw=localStorage.getItem("breach:mission-2:v1");if(raw){const saved=JSON.parse(raw) as Save & {submitted?:boolean;studentName?:string;certificate?:boolean};if(scenarios.some(s=>s.id===saved.scenario)){setScenarioId(saved.scenario);setStage(Math.max(0,Math.min(4,saved.stage||0)));setAnswers(saved.answers||{});setReport(saved.report||"");setHintOpen(false);setRestored(true);setSubmitted(saved.submitted===true);setStudentName(saved.studentName||"");setCertificate(saved.certificate===true);}}}catch{}finally{setLoaded(true);}},[]);
   useEffect(()=>{if(!loaded)return;try{if(!scenarioId){localStorage.removeItem("breach:mission-2:v1");return;}localStorage.setItem("breach:mission-2:v1",JSON.stringify({scenario:scenarioId,stage,answers,report,hintOpen:false,submitted,studentName,certificate}));}catch{}},[loaded,scenarioId,stage,answers,report,submitted,studentName,certificate]);
@@ -219,6 +222,12 @@ export default function MissionTwoClient() {
   const selected=answers[stage];
   const score=useMemo(()=>scenario?Object.entries(answers).filter(([key,value])=>scenario.stages[Number(key)]?.choices[value]?.correct).length:0,[scenario,answers]);
   const completed=Object.keys(answers).filter(key=>scenario?.stages[Number(key)]).length;
+  const heatNodes: HeatNode[] = MISSION_RUNTIME_CONFIG["mission-2"].targets.map((target,index) => {
+    const relatedStages = [[0],[1],[2],[3,4]][index];
+    const correct = relatedStages.filter((stageIndex) => scenario?.stages[stageIndex]?.choices[answers[stageIndex]]?.correct).length;
+    const incorrect = relatedStages.filter((stageIndex) => answers[stageIndex] !== undefined && !scenario?.stages[stageIndex]?.choices[answers[stageIndex]]?.correct).length;
+    return { ...target, proximity: Math.max(0, Math.min(100, 12 + correct * 43 - incorrect * 8)) };
+  });
   const allComplete=completed===5;
   const minimum= scenarioId==="rookie"?35:scenarioId==="analyst"?65:100;
 
@@ -257,6 +266,7 @@ export default function MissionTwoClient() {
     {restored&&<div className="restore-notice">SAVED INVESTIGATION RESTORED — Your answers and report were recovered from this browser.</div>}
     <div className="autosave-strip"><span>✓ AUTO-SAVE ON THIS DEVICE</span><button onClick={reset}>START OVER ↻</button></div>
     <div className="progress-wrap"><div className="progress-label"><span>INVESTIGATION PROGRESS</span><strong>{completed} / 5 STAGES</strong></div><div className="progress-track"><div className="progress-fill" style={{width:(completed/5*100)+"%"}}/></div></div>
+    <InvestigationHeatmap nodes={heatNodes} selectedId={selectedHeatNode} onSelect={setSelectedHeatNode} />
     <section className="scenario-panel"><div className="panel-kicker">CASE BRIEF / {scenario.role}</div><h2>{scenario.title}</h2><p>{scenario.intro}</p><div className="scenario-meta"><span>{scenario.technical.toUpperCase()}</span><span>STAGE {stage+1} OF 5</span><span>SIMULATED EVIDENCE</span></div></section>
     <div className="mission2-workspace">
       <aside className="branch-sidebar"><div className="panel-kicker">INVESTIGATION STAGES</div><p className="sidebar-intro">Complete each stage to build your final determination. You can revisit completed stages.</p>{scenario.stages.map((item,index)=><button key={item.title} className={"branch-button "+(stage===index?"branch-selected":"")+(answers[index]!==undefined?" branch-done":"")} onClick={()=>{setStage(index);setHintOpen(false);}}><span className="branch-icon">{String(index+1).padStart(2,"0")}</span><span className="branch-button-copy"><strong>{item.title}</strong><small>{item.subtitle}</small></span><span className="branch-check">{answers[index]!==undefined?"✓":"↗"}</span></button>)}<div className="hint-box"><button className="hint-toggle" onClick={()=>setHintOpen(v=>!v)}>{hintOpen?"HIDE":"SHOW"} INVESTIGATOR HINT</button>{hintOpen&&<p>{current?.hint}</p>}</div></aside>
