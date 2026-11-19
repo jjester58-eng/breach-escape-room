@@ -371,7 +371,7 @@ export default function HotelWorld() {
       </header>
 
       <section className="hotel-intro">
-        <div><span className="hotel-kicker">MISSION 02 // ENVIRONMENTAL INVESTIGATION</span><h1>THE <em>IMPOSTOR</em></h1><p>Something is wrong at the Northstar Hotel. Explore the lobby, talk to staff, and inspect the digital evidence. The full certificate investigation is still waiting when you're ready.</p></div>
+        <div><span className="hotel-kicker">MISSION 02 // ENVIRONMENTAL INVESTIGATION</span><h1>THE <em>IMPOSTOR</em></h1><p>Something is wrong at the Northstar Hotel. Explore the lobby, talk to staff, and inspect the digital evidence. The full certificate investigation is still waiting when you&apos;re ready.</p></div>
         <div className="hotel-stats"><div><strong>{completed.length}/4</strong><small>CLUES VERIFIED</small></div><div><strong>{xp}</strong><small>XP EARNED</small></div></div>
       </section>
 
@@ -400,7 +400,7 @@ export default function HotelWorld() {
 
       {active && <div className="hotel-modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setActive(null); }}>
         <section className="hotel-modal" role="dialog" aria-modal="true" aria-labelledby="hotel-modal-title">
-          <div className="hotel-modal-head"><span>{active.location} // EVIDENCE FOUND</span><button type="button" onClick={() => setActive(null)} aria-label="Close investigation">×</button></div>
+          <div className="hotel-modal-head"><span>{active.location} · EVIDENCE FOUND</span><button type="button" onClick={() => setActive(null)} aria-label="Close investigation">×</button></div>
           <h2 id="hotel-modal-title">{active.title}</h2>
           <p className="hotel-briefing">{active.briefing}</p>
           <div className="hotel-evidence-grid">{active.evidence.map((item) => <div key={item.label}><small>{item.label}</small><strong>{item.value}</strong></div>)}</div>
