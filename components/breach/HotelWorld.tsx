@@ -207,7 +207,7 @@ export default function HotelWorld() {
     security.position.set(7, 0, -6);
     architecture.add(security);
     addBox(security, 0, 0.62, 0, 3.8, 1.2, 1.2, 0x33444d);
-    addBox(security, 0, 1.65, -0.3, 3.0, 1.3, 0x121f29);
+    addBox(security, 0, 1.65, -0.3, 3.0, 1.3, 0.16, 0x121f29);
     makeLabel(security, 0, 1.68, 0.38, 2.5, 0.92, 0x126d7c, "security");
     addBox(security, -1.2, 2.7, -0.25, 0.12, 0.9, 0.12, 0x64727a);
     addBox(security, 1.2, 2.7, -0.25, 0.12, 0.9, 0.12, 0x64727a);
