@@ -250,12 +250,13 @@ export default function HotelWorld() {
           access: new THREE.Vector3(8, 1.5, 0),
           security: new THREE.Vector3(7, 1.5, -6),
         };
-        ids.forEach((id) => {
+        for (const id of ids) {
           const distance = player.position.distanceTo(positions[id]);
           if (distance < 4.2 && (!nearest || distance < nearest.distance)) nearest = { id, distance };
-        });
-        if (nearest) {
-          const found = challenges.find((item) => item.id === (nearest as { id: string }).id);
+        }
+        const nearestId = nearest?.id;
+        if (nearestId) {
+          const found = challenges.find((item) => item.id === nearestId);
           if (found) window.dispatchEvent(new CustomEvent("breach-hotel-open", { detail: found.id }));
         }
       }
