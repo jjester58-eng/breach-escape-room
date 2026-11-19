@@ -1,5 +1,7 @@
 "use client";
 
+import "./prototype.css";
+
 import Link from "next/link";
 import { useState } from "react";
 
