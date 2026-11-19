@@ -380,7 +380,8 @@ export default function HotelWorld() {
           <div className="hotel-world-label"><span>◈ NORTHSTAR HOTEL // LOBBY</span><span>3D WORLD · SIMULATION</span></div>
           <canvas ref={canvasRef} className="hotel-canvas" aria-label="Interactive 3D hotel lobby. Use WASD or arrow keys to move and click objects to investigate." />
           <div className="hotel-map-legend"><span><i className="legend-player" /> YOU</span><span><i className="legend-target" /> INVESTIGATE</span><span>W A S D / ARROWS TO MOVE · E TO INTERACT</span></div>
-          {!isReady && <div className="hotel-loading">LOADING HOTEL ENVIRONMENT...</div>}
+          <div className="hotel-notice">{notice}</div>
+          {!isReady && <div className="hotel-loading">{notice}</div>}
         </div>
         <aside className="hotel-side-panel">
           <div className="hotel-panel-title"><span>MISSION OBJECTIVES</span><b>01 / 04</b></div>
