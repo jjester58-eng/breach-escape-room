@@ -185,7 +185,7 @@ export default function HotelWorld() {
     architecture.add(frontDesk);
     addBox(frontDesk, 0, 0.72, 0, 5.2, 1.35, 1.5, 0x644c3d);
     addBox(frontDesk, 0, 1.42, 0, 5.35, 0.18, 1.62, 0xb18a5f);
-    addBox(frontDesk, 0, 1.95, -0.2, 2.1, 0.85, 0x253743);
+    addBox(frontDesk, 0, 1.95, -0.2, 2.1, 0.85, 0.12, 0x253743);
     makeLabel(frontDesk, 0, 2.0, 0.34, 1.6, 0.44, 0x20b8c9, "reception");
 
     const kiosk = new THREE.Group();
@@ -201,7 +201,7 @@ export default function HotelWorld() {
     architecture.add(accessDoor);
     addBox(accessDoor, 0, 1.55, 0, 2.5, 3.1, 0.28, 0x273d49);
     makeLabel(accessDoor, -0.75, 1.65, 0.2, 0.35, 0.55, 0xe5a24d, "access");
-    addBox(accessDoor, 1.55, 1.1, 0.1, 0.75, 1.2, 0x24343e);
+    addBox(accessDoor, 1.55, 1.1, 0.1, 0.75, 1.2, 0.18, 0x24343e);
 
     const security = new THREE.Group();
     security.position.set(7, 0, -6);
