@@ -1,4 +1,6 @@
+Attempting to perform the InitializeDefaultDrives operation on the 'FileSystem' provider failed.
 import Link from "next/link";
+import CampaignProgress from "@/components/breach/CampaignProgress";
 
 const missions = [
   { number: "01", name: "The Infiltration", topic: "Phishing · Social Engineering · Malware", status: "PLAYABLE", href: "/mission-1" },
@@ -6,6 +8,7 @@ const missions = [
   { number: "03", name: "Hidden Evidence", topic: "File Hashes · Hidden Messages · Secret Codes", status: "PLAYABLE", href: "/mission-3" },
   { number: "04", name: "Network Under Attack", topic: "Network Traffic · Suspicious Connections · Attacker Movement", status: "PLAYABLE", href: "/mission-4" },
   { number: "05", name: "Incident Response", topic: "Containment · Eradication · Recovery · Risk Management", status: "PLAYABLE", href: "/mission-5" },
+  { number: "06", name: "The Stolen Credentials", topic: "Social Engineering · Physical Security · Identity Theft", status: "NEW MISSION", href: "/mission-6" },
 ];
 
 export default function Home() {
@@ -14,7 +17,7 @@ export default function Home() {
       <nav className="topbar">
         <Link className="brand" href="/" aria-label="BREACH home"><span className="brand-mark">B</span><span>BREACH<span className="brand-period">.</span></span></Link>
         <span className="topbar-label">HIGH SCHOOL CYBERSECURITY GAME</span>
-        <span className="topbar-status"><i /> SYSTEM ONLINE</span>
+        <div className="home-topbar-right"><CampaignProgress /><span className="topbar-status"><i /> SYSTEM ONLINE</span></div>
       </nav>
       <section className="hero">
         <div className="hero-copy">
@@ -60,3 +63,4 @@ export default function Home() {
     </main>
   );
 }
+

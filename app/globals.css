@@ -1,3 +1,4 @@
+Attempting to perform the InitializeDefaultDrives operation on the 'FileSystem' provider failed.
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap');
 
 :root {
@@ -647,3 +648,52 @@ h2 { margin: 12px 0 0; font-family: 'Barlow Condensed', sans-serif; font-size: 4
 .ir-outcome strong{color:var(--cyan);font:700 24px 'Barlow Condensed',sans-serif}
 @media(max-width:700px){.ir-status-strip{grid-template-columns:1fr}.ir-learning-note,.ir-consequence{flex-direction:column;gap:5px}.ir-outcome{gap:5px}.ir-outcome>div{padding:9px}.ir-outcome span{font-size:7px}.ir-report-meta{flex-direction:column}}
 @media print{.game-nav,.completion-mark,.completion-actions,.game-footer{display:none!important}.completion-panel{margin:0!important;padding:0!important}.report-review{border:0!important;background:#fff!important}.report-review pre{color:#111!important;font-size:9pt!important}.completion-shell,.game-shell{background:#fff!important;color:#111!important}}
+
+/* Mission 06 — 2D hotel pursuit prototype */
+.home-topbar-right { display:flex;align-items:center;gap:15px; }
+.campaign-progress-chip { display:flex;align-items:center;gap:8px;padding:7px 9px;border:1px solid #33534b;background:#0e1b19;white-space:nowrap; }
+.campaign-progress-chip strong { color:#70d9b3;font:9px 'DM Mono',monospace; }.campaign-progress-chip span { color:#7f9690;font:7px 'DM Mono',monospace;letter-spacing:.4px; }
+.mission6-shell { max-width:1320px; }
+.mission6-brief { margin-bottom:18px; }
+.mission6-status { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:14px 0; }
+.mission6-status>div { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:12px 14px; border:1px solid var(--line); background:#0c151b; }
+.mission6-status span { color:#82919b; font:8px 'DM Mono',monospace; letter-spacing:.6px; }
+.mission6-status strong { color:var(--cyan); font:11px 'DM Mono',monospace; }
+.mission6-layout { display:grid; grid-template-columns:minmax(0,1.55fr) minmax(290px,.75fr); gap:14px; align-items:start; margin:14px 0 24px; }
+.mission6-map-panel,.mission6-sidebar>section,.mission6-decision { border:1px solid var(--line); background:linear-gradient(145deg,#111b24,#0c1319); }
+.mission6-map-panel { padding:16px; }
+.mission6-map-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:12px; }
+.mission6-map-heading h2,.mission6-decision h2 { margin:5px 0; color:#eef3f4; font:700 25px 'Barlow Condensed',sans-serif; }
+.mission6-map-legend { display:flex; align-items:center; gap:7px; color:#9eacb3; font:7px 'DM Mono',monospace; }
+.mission6-map-legend i { width:9px; height:9px; border-radius:50%; margin-left:5px; }
+.player-dot { background:#55e5b6; }.suspect-dot { background:#ff866f; }.clue-dot { background:#f2c15e; }
+.mission6-map { position:relative; width:100%; aspect-ratio:1.48; min-height:340px; overflow:hidden; border:1px solid #3b4b50; background-color:#101a1c; background-image:linear-gradient(rgba(91,126,115,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(91,126,115,.055) 1px,transparent 1px); background-size:24px 24px; }
+.map-room { position:absolute; z-index:0; display:flex; flex-direction:column; justify-content:space-between; padding:12px; border:2px solid #61726c; background:repeating-linear-gradient(45deg,#1a2928,#1a2928 9px,#1c2c2a 9px,#1c2c2a 18px); color:#a4b4ac; }
+.map-room b { font:9px 'DM Mono',monospace; letter-spacing:.7px; }.map-room span { color:#71857c; font:7px 'DM Mono',monospace; }
+.room-lobby { left:4%;top:10%;width:36%;height:70%; }.room-lounge { left:44%;top:12%;width:31%;height:36%; }.room-service { left:62%;top:57%;width:33%;height:31%; }
+.map-corridor { position:absolute; left:34%; top:44%; width:39%; height:17%; border-top:2px solid #465951; border-bottom:2px solid #465951; background:#182321; }
+.map-desk { position:absolute; left:11%;top:37%; padding:9px 13px; border:1px solid #937347; background:#493c2b; color:#e5c587; font:7px 'DM Mono',monospace; }
+.desk-two { left:52%;top:21%; background:#263d3a; border-color:#52766e; color:#a0d0bd; }
+.map-plant { position:absolute; z-index:1; display:grid;place-items:center;width:26px;height:26px;border:1px solid #476b55;border-radius:50%;background:#1a3527;color:#76b47d; }
+.plant-one { left:7%;top:16%; }.plant-two { left:30%;top:67%; }
+.map-character { position:absolute; z-index:4; transform:translate(-50%,-50%); display:flex; align-items:center; gap:4px; white-space:nowrap; border-radius:20px; padding:4px 7px; font:7px 'DM Mono',monospace; letter-spacing:.3px; box-shadow:0 2px 9px #0009; transition:left .3s,top .3s; }
+.player-character { border:1px solid #55e5b6; background:#12342c; color:#75f2ca; }.visitor-character { border:1px solid #f18972;background:#44231f;color:#ffc0a9; }.visitor-character span { font-size:13px;font-weight:700; }
+.map-route { position:absolute; z-index:2; inset:0; pointer-events:none; }
+.map-route i { position:absolute; width:5px;height:5px;transform:translate(-50%,-50%);border-radius:50%;background:#f18c72;box-shadow:0 0 8px #fa806b; }
+.map-clue { position:absolute; z-index:5; transform:translate(-50%,-50%); width:27px;height:27px;border:1px solid #f1c45f;border-radius:50%;background:#3b311b;color:#ffd978;font:700 13px 'DM Mono',monospace;cursor:pointer;box-shadow:0 0 15px #f1c45f55; }
+.map-clue:hover { transform:translate(-50%,-50%) scale(1.14); }.map-clue.clue-found { border-color:#55e5b6;background:#12342c;color:#55e5b6;box-shadow:none; }
+.mission6-controls { display:flex;align-items:center;gap:15px;flex-wrap:wrap;padding-top:14px; }.mission6-controls .primary-button { border:0;cursor:pointer; }.mission6-controls .primary-button:disabled { opacity:.38;cursor:not-allowed; }
+.mission6-dpad { display:grid;gap:4px;justify-items:center; }.mission6-dpad>div { display:flex;gap:4px; }.mission6-dpad button { width:34px;height:30px;border:1px solid #40515a;background:#17232b;color:#dbe5e8;cursor:pointer;touch-action:manipulation; }
+.mission6-control-hint { color:#7f8e97;font:8px 'DM Mono',monospace; }
+.mission6-sidebar { display:grid;gap:12px; }.mission6-sidebar>section { padding:15px; }.mission6-sidebar h2 { margin:6px 0 12px;color:#e9eff1;font:700 22px 'Barlow Condensed',sans-serif; }
+.mission6-empty,.mission6-objective p { color:#91a0a8;font-size:10px;line-height:1.7; }
+.mission6-evidence-list { display:grid;gap:7px;margin:0;padding:0;list-style:none; }.mission6-evidence-list li { display:flex;align-items:center;gap:9px;padding:9px;border:1px solid #2e4146;background:#0b1418; }.mission6-evidence-list li>span { color:var(--cyan);font-size:17px; }.mission6-evidence-list li>div { display:grid;gap:4px;flex:1; }.mission6-evidence-list strong { color:#d6e1e2;font:8px 'DM Mono',monospace; }.mission6-evidence-list small { color:#84959a;font:7px 'DM Mono',monospace; }.mission6-evidence-list button { border:0;background:transparent;color:var(--cyan);cursor:pointer; }
+.mission6-evidence-detail { margin-top:11px;padding:11px;border-left:2px solid var(--cyan);background:#10201f; }.mission6-evidence-detail p { margin:6px 0 10px;color:#b5c8c4;font-size:9px;line-height:1.7; }.mission6-evidence-detail small { color:#829893;font:7px 'DM Mono',monospace;letter-spacing:.6px; }
+.mission6-objective>strong { display:block;margin-top:8px;color:#e4ecee;font:600 14px 'Barlow Condensed',sans-serif; }.mission6-objective .secondary-button { margin-top:5px;border-color:#40554e;color:#b7d9cf;cursor:pointer; }
+.mission6-decision { padding:20px;margin:22px 0; }.mission6-decision>p { color:#9eabb2;font-size:11px;line-height:1.7; }.mission6-choice-grid { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:15px 0; }.mission6-choice-grid button { min-height:88px;padding:13px;border:1px solid #35434b;background:#0b1419;color:#c7d2d6;text-align:left;font:10px/1.7 'DM Sans',sans-serif;cursor:pointer; }.mission6-choice-grid button:hover,.mission6-choice-grid button.choice-selected { border-color:var(--cyan);background:#10221f; }
+.mission6-choice-grid button:disabled { opacity:.45;cursor:not-allowed; }.mission6-locked-note { color:#e1bd70!important;font:8px 'DM Mono',monospace!important;letter-spacing:.4px; }
+.mission6-feedback { margin:12px 0;padding:13px;border:1px solid #8c6b32;background:#241f14;color:#ead6a4; }.mission6-feedback strong { font:9px 'DM Mono',monospace;letter-spacing:.6px; }.mission6-feedback p { margin:7px 0 0;font-size:10px;line-height:1.7; }.mission6-feedback.feedback-good { border-color:#337b66;background:#10241e;color:#c1e6d8; }.mission6-reward { display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:13px;padding:14px;border:1px solid #39735f;background:#10231e; }.mission6-reward strong { color:var(--cyan);font:700 24px 'Barlow Condensed',sans-serif; }.mission6-reward span { color:#a4c5ba;font:8px 'DM Mono',monospace;letter-spacing:.4px; }
+@media(max-width:900px) { .mission6-layout { grid-template-columns:1fr; }.mission6-sidebar { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:600px) { .mission6-status { grid-template-columns:1fr;gap:6px; }.mission6-status>div { padding:9px 11px; }.mission6-map-panel { padding:10px; }.mission6-map { min-height:300px;aspect-ratio:.95; }.mission6-map-heading { flex-direction:column; }.mission6-sidebar,.mission6-choice-grid { grid-template-columns:1fr; }.mission6-choice-grid button { min-height:62px; }.mission6-controls { justify-content:center; }.mission6-control-hint { width:100%;text-align:center; } }
+@media(max-width:700px) { .home-topbar-right { gap:7px; }.campaign-progress-chip { padding:6px; }.campaign-progress-chip span { display:none; }.home-topbar-right .topbar-status { display:none; } }
+
