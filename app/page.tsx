@@ -1,4 +1,3 @@
-Attempting to perform the InitializeDefaultDrives operation on the 'FileSystem' provider failed.
 import Link from "next/link";
 import CampaignProgress from "@/components/breach/CampaignProgress";
 

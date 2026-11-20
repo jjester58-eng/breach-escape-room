@@ -1,4 +1,3 @@
-Attempting to perform the InitializeDefaultDrives operation on the 'FileSystem' provider failed.
 import MissionSixClient from "./mission-client";
 
 export const metadata = {
